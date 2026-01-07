@@ -1,0 +1,108 @@
+{
+  "updatedAt": "2026-01-07T08:14:38.963Z",
+  "createdAt": "2026-01-04T03:16:51.621Z",
+  "id": "cNpKcaluiA02ZcBw",
+  "name": "Webhook Mistral API Key",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "797a3717-940a-41f7-8e03-458453bcc372",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        16
+      ],
+      "id": "e83b0a88-8672-46a3-aa13-09fcf77ec780",
+      "name": "Webhook",
+      "webhookId": "797a3717-940a-41f7-8e03-458453bcc372"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "create",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "email",
+              "fieldValue": "={{ $json.body.email }}"
+            },
+            {
+              "fieldName": "api_key",
+              "fieldValue": "={{ $json.body.api_key }}"
+            },
+            {
+              "fieldName": "created_date",
+              "fieldValue": "={{ new Date(new Date($json.body.created_at).getTime() + 7 * 60 * 60 * 1000).toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        240,
+        16
+      ],
+      "id": "19ae2978-2158-49be-8f76-f0d796705b49",
+      "name": "Create a row",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "cd57ce81-eaf1-4882-9783-dabbed53a18d",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-04T03:16:51.621Z",
+      "createdAt": "2026-01-04T03:16:51.621Z",
+      "role": "workflow:owner",
+      "workflowId": "cNpKcaluiA02ZcBw",
+      "projectId": "3vieiS9Ecmyflq5d"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2026-01-04T07:20:32.974Z",
+      "createdAt": "2026-01-04T07:20:32.974Z",
+      "id": "CxrLeml51tTrEHRr",
+      "name": "Mistral"
+    }
+  ]
+}
