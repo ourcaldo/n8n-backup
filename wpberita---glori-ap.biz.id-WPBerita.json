@@ -1,0 +1,1613 @@
+{
+  "updatedAt": "2026-01-08T18:58:15.621Z",
+  "createdAt": "2025-12-28T15:59:34.812Z",
+  "id": "w1W2rfjInBbNzrGM",
+  "name": "WPBerita - glori-ap.biz.id",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "articles",
+        "limit": 1,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "is",
+              "keyValue": "null"
+            },
+            {
+              "keyName": "content",
+              "condition": "gt",
+              "keyValue": "10"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        0
+      ],
+      "id": "c59f64cd-c27c-46a9-bdbd-e2c60b9b5ca6",
+      "name": "Supabase - Get Content",
+      "credentials": {
+        "supabaseApi": {
+          "id": "igjKz98zuDgw9hbk",
+          "name": "Supabase - Tugasin - Gloriap"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the response from HTTP Request\nconst response = $input.item.json;\n\n// Extract the content string from the response\nconst contentString = response.choices[0].message.content;\n\n// Parse the JSON string into an object\nconst rewrittenData = JSON.parse(contentString);\n\n// Function to capitalize each word while preserving all-caps words\nfunction capitalizeTag(tag) {\n  return tag.trim().split(' ').map(word => {\n    // If word is all uppercase (like SPBU, BBM), keep it as is\n    if (word === word.toUpperCase() && word.length > 1) {\n      return word;\n    }\n    // Otherwise capitalize first letter only\n    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n  }).join(' ');\n}\n\n// Process tags if they exist\nlet processedTags = null;\nif (rewrittenData.tags) {\n  processedTags = rewrittenData.tags\n    .split(',')\n    .map(tag => capitalizeTag(tag))\n    .join(', ');\n}\n\n// Return the parsed data\nreturn {\n  json: {\n    rewritten_title: rewrittenData.title,\n    rewritten_summary: rewrittenData.summary,\n    rewritten_content: rewrittenData.content,\n    rewritten_tags: processedTags\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        16
+      ],
+      "id": "3113fb89-3ecb-4727-aab5-dd06e1ddcbc0",
+      "name": "Extract Response"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://glori-ap.biz.id/wp-json/wp/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {{ JSON.stringify($('Extract Response').first().json.rewritten_title) }},\n  \"content\": {{ JSON.stringify($('Extract Response').first().json.rewritten_content) }},\n  \"excerpt\": {{ JSON.stringify($('Extract Response').first().json.rewritten_summary) }},\n  \"status\": \"publish\",\n  \"comment_status\": \"open\",\n  \"ping_status\": \"open\",\n\n  \"categories\": {{ JSON.stringify([$('Code - WP Category & Tags').first().json.category_id]) }},\n  \"tags\": {{ JSON.stringify($('Code - WP Category & Tags').first().json.tag_ids) }},\n\n\n  \"meta\": {\n    \"fifu_image_url\": {{ JSON.stringify($('Supabase - Get Content').first().json.images || '') }},\n    \"rank_math_primary_category\": {{ $('Code - WP Category & Tags').first().json.category_id }},\n    \"rank_math_focus_keyword\": {{ JSON.stringify($('Extract Response').first().json.rewritten_tags.split(', ')[0].trim()) }},\n    \"kia_subtitle\": {{ JSON.stringify($('Extract Response').first().json.rewritten_summary) }},\n    \"_durh\": 0,\n    \"_durm\": 0,\n    \"_durs\": 0\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        832,
+        160
+      ],
+      "id": "9cca2ef7-da56-4f68-902c-d24de22f38c8",
+      "name": "Webhook to WP",
+      "executeOnce": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "nUAsbUyQzUAQqTjM",
+          "name": "WP - glori-ap.biz.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "articles",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase - Get Content').first().json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "published"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        144
+      ],
+      "id": "92cf1869-7593-43af-a159-6fadd553c647",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "igjKz98zuDgw9hbk",
+          "name": "Supabase - Tugasin - Gloriap"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bd2b9c42-b27e-401a-b4e7-18ea44fc5c55",
+              "leftValue": "={{ $json[0]?.id !== undefined }}",
+              "rightValue": "=false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1056,
+        160
+      ],
+      "id": "736c03fc-a5fb-486b-9ac0-3acfb1682665",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Anda adalah jurnalis senior dan penulis konten profesional dengan 15 tahun pengalaman di media berita Indonesia. Keahlian Anda adalah menulis ulang konten berita dengan gaya semi-formal yang tetap profesional, mudah dibaca, dan menarik bagi pembaca berita online Indonesia. Anda juga ahli dalam mengidentifikasi tema dan topik utama untuk membuat tag yang relevan.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Tulis ulang konten berita di bawah ini dengan mengikuti pedoman berikut:\\n\\nPEDOMAN PENULISAN:\\n- Bahasa: Bahasa Indonesia\\n- Gaya: Semi-formal, profesional, jurnalistik\\n- Pertahankan semua fakta, data, kutipan, dan konteks dari artikel asli\\n- JANGAN tambahkan opini, informasi baru, atau spekulasi\\n- Panjang konten: minimal sama dengan aslinya, boleh sedikit lebih panjang untuk kejelasan\\n- Tingkatkan alur cerita dan keterbacaan\\n- Gunakan variasi struktur kalimat yang natural\\n- Hindari pengulangan kata atau frasa yang tidak perlu\\n- Buat artikel engaging untuk audiens berita online Indonesia\\n\\nPEDOMAN TAG:\\n- Generate 1-5 tag berdasarkan konten yang sudah ditulis ulang\\n- Tag harus merepresentasikan tema, topik, atau kata kunci utama dari artikel\\n- Gunakan Bahasa Indonesia\\n- Format: kata atau frasa pendek, dipisahkan koma\\n- Contoh tag yang baik: \\\"ekonomi digital\\\", \\\"pemilu 2024\\\", \\\"teknologi\\\", \\\"kesehatan\\\"\\n\\nINPUT:\\nJudul:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.title).slice(1, -1) }}\\n\\nRingkasan:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.summary).slice(1, -1) }}\\n\\nKonten:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.content).slice(1, -1) }}\\n\\nOUTPUT:\\nKembalikan HANYA dalam format JSON yang valid tanpa teks tambahan:\\n{\\n  \\\"title\\\": \\\"judul yang ditulis ulang\\\",\\n  \\\"summary\\\": \\\"ringkasan yang ditulis ulang\\\",\\n  \\\"content\\\": \\\"konten lengkap yang ditulis ulang\\\",\\n  \\\"tags\\\": \\\"tag1, tag2, tag3\\\"\\n}\"\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_object\"\n  },\n  \"temperature\": 0.7,\n  \"top_p\": 0.9,\n  \"max_tokens\": 4096,\n  \"frequency_penalty\": 0.3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        352,
+        16
+      ],
+      "id": "6f162940-4cd7-4606-ad22-f0d7ac4ed330",
+      "name": "Mistral - Rewrite Content"
+    },
+    {
+      "parameters": {
+        "content": "\n## Retrive Information from WP",
+        "height": 544,
+        "width": 1360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        688,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "1d214c8f-132e-44ab-96ba-53c3a711c00b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "https://glori-ap.biz.id/wp-json/wp/v2/categories",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        832,
+        -320
+      ],
+      "id": "ab6d1373-27f5-45db-adae-ee40320edcff",
+      "name": "WP - Get Categories",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "nUAsbUyQzUAQqTjM",
+          "name": "WP - glori-ap.biz.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://glori-ap.biz.id/wp-json/wp/v2/tags",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1056,
+        -320
+      ],
+      "id": "8a7b8576-8124-4c02-9bca-d6ed4435f572",
+      "name": "WP - Get Tags",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "nUAsbUyQzUAQqTjM",
+          "name": "WP - glori-ap.biz.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Anda adalah AI classifier yang ahli dalam menganalisis konten berita dan mencocokkannya dengan kategori dan tag yang paling relevan. Tugas Anda adalah menganalisis konten berita dan memilih kategori serta tag yang paling sesuai dari daftar yang tersedia, atau menyarankan pembuatan yang baru jika tidak ada yang cocok.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\"Analisis konten berita berikut dan tentukan kategori dan tag yang paling relevan:\\n\\nKONTEN BERITA:\\nJudul:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_title).slice(1, -1) + \"\\n\\nRingkasan:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_summary).slice(1, -1) + \"\\n\\nKonten:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_content).slice(1, -1) + \"\\n\\nKATEGORI YANG TERSEDIA:\\n\" + JSON.stringify($('WP - Get Categories').all().map(item => ({id: item.json.id, name: item.json.name}))) + \"\\n\\nTAG YANG TERSEDIA:\\n\" + JSON.stringify($('WP - Get Tags').all().map(item => ({id: item.json.id, name: item.json.name}))) + \"\\n\\nINSTRUKSI:\\n1. Pilih SATU kategori yang paling sesuai dengan konten\\n   - Jika ada kategori yang cocok, gunakan yang sudah ada\\n   - Jika tidak ada yang cocok, suggest nama kategori baru\\n\\n2. Pilih 3-5 tag yang paling relevan\\n   - Prioritaskan tag yang sudah ada jika sesuai\\n   - Jika tag yang dibutuhkan tidak ada, suggest nama tag baru\\n   - Campuran tag existing dan baru diperbolehkan\\n\\n3. Format output harus JSON dengan struktur:\\n   - category: {id: number (atau null jika baru), name: string, exists: boolean}\\n   - tags: array of {id: number (atau null jika baru), name: string, exists: boolean}\\n\\nOUTPUT:\\nKembalikan HANYA dalam format JSON yang valid tanpa teks tambahan:\\n{\\n  \\\"category\\\": {\\n    \\\"id\\\": 35,\\n    \\\"name\\\": \\\"Berita\\\",\\n    \\\"exists\\\": true\\n  },\\n  \\\"tags\\\": [\\n    {\\n      \\\"id\\\": 72,\\n      \\\"name\\\": \\\"Anies\\\",\\n      \\\"exists\\\": true\\n    },\\n    {\\n      \\\"id\\\": null,\\n      \\\"name\\\": \\\"Pemilu Jakarta\\\",\\n      \\\"exists\\\": false\\n    }\\n  ]\\n}\") }}\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_object\"\n  },\n  \"temperature\": 0.3,\n  \"top_p\": 0.9,\n  \"max_tokens\": 10000\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1264,
+        -320
+      ],
+      "id": "2b54f9ad-31f4-4aff-846e-e58f51df38ee",
+      "name": "Mistral - Classify",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://glori-ap.biz.id/wp-json/wp/v2/categories",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $('Code - Category to Create').item.json.name}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "949071d2-9895-4a28-bdd6-640494e439da",
+      "name": "WP - Post Categories",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "nUAsbUyQzUAQqTjM",
+          "name": "WP - glori-ap.biz.id"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://glori-ap.biz.id/wp-json/wp/v2/tags",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $('Code - Tags to Create').item.json.name}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1056,
+        -96
+      ],
+      "id": "de128f54-e8e0-4007-a938-9e6f4de3ae6a",
+      "name": "WP - Post Tags",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "nUAsbUyQzUAQqTjM",
+          "name": "WP - glori-ap.biz.id"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the response from HTTP Request (Mistral - Classify)\nconst response = $input.item.json;\n\n// Extract the JSON string from Mistral response\nconst contentString = response.choices[0].message.content;\n\n// Parse it into an object\nconst extractedJson = JSON.parse(contentString);\n\n// Return original data only\nreturn {\n  json: extractedJson\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -320
+      ],
+      "id": "ec0dd53e-ee5f-4b13-915d-5029020e710a",
+      "name": "Extract - Classify's Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('Extract - Classify\\'s Response').all();\n\nreturn items.flatMap(item =>\n  (item.json.tags || [])\n    .filter(tag => tag.exists === false)\n    .map(tag => ({\n      json: { name: tag.name }\n    }))\n);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -208
+      ],
+      "id": "c5d57326-743e-4aa0-897e-9da3d0b2e32f",
+      "name": "Code - Tags to Create"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Extract - Classify\\'s Response').item.json;\n\nif (data.category && data.category.exists === false) {\n  return [\n    {\n      json: {\n        name: data.category.name\n      }\n    }\n  ];\n}\n\nreturn [];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -384
+      ],
+      "id": "156b8114-a1c8-4f9b-a843-584e599fb4d7",
+      "name": "Code - Category to Create",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1920,
+        -304
+      ],
+      "id": "a836f65f-f990-4e31-bbee-412da2bea79f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Base classification (from Mistral)\nconst classification = $('Extract - Classify\\'s Response').all()[0].json;\n\n// 2. Existing WP terms\nconst wpTags = $('WP - Get Tags').all().map(i => i.json);\nconst wpCategories = $('WP - Get Categories').all().map(i => i.json);\n\n// 3. Created term responses (success + error)\nconst createdTerms = $input.all().map(i => i.json);\n\n// ---------- CATEGORY ----------\nlet categoryId = classification.category.id;\n\nif (!categoryId) {\n  // try from created responses\n  const createdCat = createdTerms.find(t => t.taxonomy === 'category');\n  if (createdCat?.id) {\n    categoryId = createdCat.id;\n  } else {\n    // fallback lookup\n    const found = wpCategories.find(\n      c => c.name.toLowerCase() === classification.category.name.toLowerCase()\n    );\n    if (found) categoryId = found.id;\n  }\n}\n\n// ---------- TAGS ----------\nconst tagIds = [];\n\nfor (const tag of classification.tags) {\n  if (tag.id) {\n    // already existed\n    tagIds.push(tag.id);\n    continue;\n  }\n\n  // 1. created successfully\n  const created = createdTerms.find(\n    t => t.name?.toLowerCase() === tag.name.toLowerCase()\n  );\n  if (created?.id) {\n    tagIds.push(created.id);\n    continue;\n  }\n\n  // 2. term_exists error → extract term_id\n  const errorItem = createdTerms.find(\n    t => t.error?.message?.includes(tag.name)\n  );\n  if (errorItem?.error?.message) {\n    const match = errorItem.error.message.match(/\"term_id\":(\\d+)/);\n    if (match) {\n      tagIds.push(Number(match[1]));\n      continue;\n    }\n  }\n\n  // 3. fallback lookup from WP\n  const found = wpTags.find(\n    t => t.name.toLowerCase() === tag.name.toLowerCase()\n  );\n  if (found) tagIds.push(found.id);\n}\n\nreturn {\n  json: {\n    category_id: categoryId,\n    tag_ids: [...new Set(tagIds)] // dedupe\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        -96
+      ],
+      "id": "88828ca2-f63c-45ad-9234-ac22ad32d157",
+      "name": "Code - WP Category & Tags"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -720,
+        0
+      ],
+      "id": "96b17872-5487-4829-9155-15aa2adeea17",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "limit": 1,
+        "options": {
+          "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "3b39969e-7c24-43d1-8205-c0f92d003050",
+      "name": "NocoDB - Get Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "expired_date",
+              "fieldValue": "={{ $now.plus(5, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "fieldName": "id",
+              "fieldValue": "={{ $json.Id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        112,
+        -64
+      ],
+      "id": "aec254e3-e17f-4b14-8eef-92e4eded140c",
+      "name": "NocoDB - Update Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+              "leftValue": "={{ $json.expired_date }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "4936b425-cf06-484e-b4ab-4a83937388a7",
+      "name": "Filter - NocoDB"
+    }
+  ],
+  "connections": {
+    "Supabase - Get Content": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Get Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Response": {
+      "main": [
+        [
+          {
+            "node": "WP - Get Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook to WP": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        []
+      ]
+    },
+    "Mistral - Rewrite Content": {
+      "main": [
+        [
+          {
+            "node": "Extract Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP - Get Categories": {
+      "main": [
+        [
+          {
+            "node": "WP - Get Tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP - Get Tags": {
+      "main": [
+        [
+          {
+            "node": "Mistral - Classify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral - Classify": {
+      "main": [
+        [
+          {
+            "node": "Extract - Classify's Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP - Post Categories": {
+      "main": [
+        [
+          {
+            "node": "WP - Post Tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract - Classify's Response": {
+      "main": [
+        [
+          {
+            "node": "Code - Category to Create",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code - Tags to Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Category to Create": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Tags to Create": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "WP - Post Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP - Post Tags": {
+      "main": [
+        [
+          {
+            "node": "Code - WP Category & Tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - WP Category & Tags": {
+      "main": [
+        [
+          {
+            "node": "Webhook to WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Get Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Get Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Filter - NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Update Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Mistral - Rewrite Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter - NocoDB": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Update Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mistral - Rewrite Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "23098278-fb71-4411-b06c-a0454194cc5a",
+  "activeVersionId": "23098278-fb71-4411-b06c-a0454194cc5a",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-28T15:59:34.812Z",
+      "createdAt": "2025-12-28T15:59:34.812Z",
+      "role": "workflow:owner",
+      "workflowId": "w1W2rfjInBbNzrGM",
+      "projectId": "3vieiS9Ecmyflq5d"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-08T18:58:21.469Z",
+    "createdAt": "2026-01-08T18:58:15.624Z",
+    "versionId": "23098278-fb71-4411-b06c-a0454194cc5a",
+    "workflowId": "w1W2rfjInBbNzrGM",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "articles",
+          "limit": 1,
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "status",
+                "condition": "is",
+                "keyValue": "null"
+              },
+              {
+                "keyName": "content",
+                "condition": "gt",
+                "keyValue": "10"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -544,
+          0
+        ],
+        "id": "c59f64cd-c27c-46a9-bdbd-e2c60b9b5ca6",
+        "name": "Supabase - Get Content",
+        "credentials": {
+          "supabaseApi": {
+            "id": "igjKz98zuDgw9hbk",
+            "name": "Supabase - Tugasin - Gloriap"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get the response from HTTP Request\nconst response = $input.item.json;\n\n// Extract the content string from the response\nconst contentString = response.choices[0].message.content;\n\n// Parse the JSON string into an object\nconst rewrittenData = JSON.parse(contentString);\n\n// Function to capitalize each word while preserving all-caps words\nfunction capitalizeTag(tag) {\n  return tag.trim().split(' ').map(word => {\n    // If word is all uppercase (like SPBU, BBM), keep it as is\n    if (word === word.toUpperCase() && word.length > 1) {\n      return word;\n    }\n    // Otherwise capitalize first letter only\n    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n  }).join(' ');\n}\n\n// Process tags if they exist\nlet processedTags = null;\nif (rewrittenData.tags) {\n  processedTags = rewrittenData.tags\n    .split(',')\n    .map(tag => capitalizeTag(tag))\n    .join(', ');\n}\n\n// Return the parsed data\nreturn {\n  json: {\n    rewritten_title: rewrittenData.title,\n    rewritten_summary: rewrittenData.summary,\n    rewritten_content: rewrittenData.content,\n    rewritten_tags: processedTags\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          576,
+          16
+        ],
+        "id": "3113fb89-3ecb-4727-aab5-dd06e1ddcbc0",
+        "name": "Extract Response"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://glori-ap.biz.id/wp-json/wp/v2/posts",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"title\": {{ JSON.stringify($('Extract Response').first().json.rewritten_title) }},\n  \"content\": {{ JSON.stringify($('Extract Response').first().json.rewritten_content) }},\n  \"excerpt\": {{ JSON.stringify($('Extract Response').first().json.rewritten_summary) }},\n  \"status\": \"publish\",\n  \"comment_status\": \"open\",\n  \"ping_status\": \"open\",\n\n  \"categories\": {{ JSON.stringify([$('Code - WP Category & Tags').first().json.category_id]) }},\n  \"tags\": {{ JSON.stringify($('Code - WP Category & Tags').first().json.tag_ids) }},\n\n\n  \"meta\": {\n    \"fifu_image_url\": {{ JSON.stringify($('Supabase - Get Content').first().json.images || '') }},\n    \"rank_math_primary_category\": {{ $('Code - WP Category & Tags').first().json.category_id }},\n    \"rank_math_focus_keyword\": {{ JSON.stringify($('Extract Response').first().json.rewritten_tags.split(', ')[0].trim()) }},\n    \"kia_subtitle\": {{ JSON.stringify($('Extract Response').first().json.rewritten_summary) }},\n    \"_durh\": 0,\n    \"_durm\": 0,\n    \"_durs\": 0\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          832,
+          160
+        ],
+        "id": "9cca2ef7-da56-4f68-902c-d24de22f38c8",
+        "name": "Webhook to WP",
+        "executeOnce": true,
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "nUAsbUyQzUAQqTjM",
+            "name": "WP - glori-ap.biz.id"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "articles",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $('Supabase - Get Content').first().json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "published"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          144
+        ],
+        "id": "92cf1869-7593-43af-a159-6fadd553c647",
+        "name": "Update a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "igjKz98zuDgw9hbk",
+            "name": "Supabase - Tugasin - Gloriap"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "bd2b9c42-b27e-401a-b4e7-18ea44fc5c55",
+                "leftValue": "={{ $json[0]?.id !== undefined }}",
+                "rightValue": "=false",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1056,
+          160
+        ],
+        "id": "736c03fc-a5fb-486b-9ac0-3acfb1682665",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Anda adalah jurnalis senior dan penulis konten profesional dengan 15 tahun pengalaman di media berita Indonesia. Keahlian Anda adalah menulis ulang konten berita dengan gaya semi-formal yang tetap profesional, mudah dibaca, dan menarik bagi pembaca berita online Indonesia. Anda juga ahli dalam mengidentifikasi tema dan topik utama untuk membuat tag yang relevan.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Tulis ulang konten berita di bawah ini dengan mengikuti pedoman berikut:\\n\\nPEDOMAN PENULISAN:\\n- Bahasa: Bahasa Indonesia\\n- Gaya: Semi-formal, profesional, jurnalistik\\n- Pertahankan semua fakta, data, kutipan, dan konteks dari artikel asli\\n- JANGAN tambahkan opini, informasi baru, atau spekulasi\\n- Panjang konten: minimal sama dengan aslinya, boleh sedikit lebih panjang untuk kejelasan\\n- Tingkatkan alur cerita dan keterbacaan\\n- Gunakan variasi struktur kalimat yang natural\\n- Hindari pengulangan kata atau frasa yang tidak perlu\\n- Buat artikel engaging untuk audiens berita online Indonesia\\n\\nPEDOMAN TAG:\\n- Generate 1-5 tag berdasarkan konten yang sudah ditulis ulang\\n- Tag harus merepresentasikan tema, topik, atau kata kunci utama dari artikel\\n- Gunakan Bahasa Indonesia\\n- Format: kata atau frasa pendek, dipisahkan koma\\n- Contoh tag yang baik: \\\"ekonomi digital\\\", \\\"pemilu 2024\\\", \\\"teknologi\\\", \\\"kesehatan\\\"\\n\\nINPUT:\\nJudul:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.title).slice(1, -1) }}\\n\\nRingkasan:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.summary).slice(1, -1) }}\\n\\nKonten:\\n{{ JSON.stringify($('Supabase - Get Content').item.json.content).slice(1, -1) }}\\n\\nOUTPUT:\\nKembalikan HANYA dalam format JSON yang valid tanpa teks tambahan:\\n{\\n  \\\"title\\\": \\\"judul yang ditulis ulang\\\",\\n  \\\"summary\\\": \\\"ringkasan yang ditulis ulang\\\",\\n  \\\"content\\\": \\\"konten lengkap yang ditulis ulang\\\",\\n  \\\"tags\\\": \\\"tag1, tag2, tag3\\\"\\n}\"\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_object\"\n  },\n  \"temperature\": 0.7,\n  \"top_p\": 0.9,\n  \"max_tokens\": 4096,\n  \"frequency_penalty\": 0.3\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          352,
+          16
+        ],
+        "id": "6f162940-4cd7-4606-ad22-f0d7ac4ed330",
+        "name": "Mistral - Rewrite Content"
+      },
+      {
+        "parameters": {
+          "content": "\n## Retrive Information from WP",
+          "height": 544,
+          "width": 1360
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          688,
+          -400
+        ],
+        "typeVersion": 1,
+        "id": "1d214c8f-132e-44ab-96ba-53c3a711c00b",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "url": "https://glori-ap.biz.id/wp-json/wp/v2/categories",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          832,
+          -320
+        ],
+        "id": "ab6d1373-27f5-45db-adae-ee40320edcff",
+        "name": "WP - Get Categories",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "nUAsbUyQzUAQqTjM",
+            "name": "WP - glori-ap.biz.id"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://glori-ap.biz.id/wp-json/wp/v2/tags",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1056,
+          -320
+        ],
+        "id": "8a7b8576-8124-4c02-9bca-d6ed4435f572",
+        "name": "WP - Get Tags",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "nUAsbUyQzUAQqTjM",
+            "name": "WP - glori-ap.biz.id"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Anda adalah AI classifier yang ahli dalam menganalisis konten berita dan mencocokkannya dengan kategori dan tag yang paling relevan. Tugas Anda adalah menganalisis konten berita dan memilih kategori serta tag yang paling sesuai dari daftar yang tersedia, atau menyarankan pembuatan yang baru jika tidak ada yang cocok.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\"Analisis konten berita berikut dan tentukan kategori dan tag yang paling relevan:\\n\\nKONTEN BERITA:\\nJudul:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_title).slice(1, -1) + \"\\n\\nRingkasan:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_summary).slice(1, -1) + \"\\n\\nKonten:\\n\" + JSON.stringify($('Extract Response').item.json.rewritten_content).slice(1, -1) + \"\\n\\nKATEGORI YANG TERSEDIA:\\n\" + JSON.stringify($('WP - Get Categories').all().map(item => ({id: item.json.id, name: item.json.name}))) + \"\\n\\nTAG YANG TERSEDIA:\\n\" + JSON.stringify($('WP - Get Tags').all().map(item => ({id: item.json.id, name: item.json.name}))) + \"\\n\\nINSTRUKSI:\\n1. Pilih SATU kategori yang paling sesuai dengan konten\\n   - Jika ada kategori yang cocok, gunakan yang sudah ada\\n   - Jika tidak ada yang cocok, suggest nama kategori baru\\n\\n2. Pilih 3-5 tag yang paling relevan\\n   - Prioritaskan tag yang sudah ada jika sesuai\\n   - Jika tag yang dibutuhkan tidak ada, suggest nama tag baru\\n   - Campuran tag existing dan baru diperbolehkan\\n\\n3. Format output harus JSON dengan struktur:\\n   - category: {id: number (atau null jika baru), name: string, exists: boolean}\\n   - tags: array of {id: number (atau null jika baru), name: string, exists: boolean}\\n\\nOUTPUT:\\nKembalikan HANYA dalam format JSON yang valid tanpa teks tambahan:\\n{\\n  \\\"category\\\": {\\n    \\\"id\\\": 35,\\n    \\\"name\\\": \\\"Berita\\\",\\n    \\\"exists\\\": true\\n  },\\n  \\\"tags\\\": [\\n    {\\n      \\\"id\\\": 72,\\n      \\\"name\\\": \\\"Anies\\\",\\n      \\\"exists\\\": true\\n    },\\n    {\\n      \\\"id\\\": null,\\n      \\\"name\\\": \\\"Pemilu Jakarta\\\",\\n      \\\"exists\\\": false\\n    }\\n  ]\\n}\") }}\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_object\"\n  },\n  \"temperature\": 0.3,\n  \"top_p\": 0.9,\n  \"max_tokens\": 10000\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1264,
+          -320
+        ],
+        "id": "2b54f9ad-31f4-4aff-846e-e58f51df38ee",
+        "name": "Mistral - Classify",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://glori-ap.biz.id/wp-json/wp/v2/categories",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"name\": \"{{ $('Code - Category to Create').item.json.name}}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          832,
+          -96
+        ],
+        "id": "949071d2-9895-4a28-bdd6-640494e439da",
+        "name": "WP - Post Categories",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "nUAsbUyQzUAQqTjM",
+            "name": "WP - glori-ap.biz.id"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://glori-ap.biz.id/wp-json/wp/v2/tags",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"name\": \"{{ $('Code - Tags to Create').item.json.name}}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1056,
+          -96
+        ],
+        "id": "de128f54-e8e0-4007-a938-9e6f4de3ae6a",
+        "name": "WP - Post Tags",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "nUAsbUyQzUAQqTjM",
+            "name": "WP - glori-ap.biz.id"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get the response from HTTP Request (Mistral - Classify)\nconst response = $input.item.json;\n\n// Extract the JSON string from Mistral response\nconst contentString = response.choices[0].message.content;\n\n// Parse it into an object\nconst extractedJson = JSON.parse(contentString);\n\n// Return original data only\nreturn {\n  json: extractedJson\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1456,
+          -320
+        ],
+        "id": "ec0dd53e-ee5f-4b13-915d-5029020e710a",
+        "name": "Extract - Classify's Response"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $('Extract - Classify\\'s Response').all();\n\nreturn items.flatMap(item =>\n  (item.json.tags || [])\n    .filter(tag => tag.exists === false)\n    .map(tag => ({\n      json: { name: tag.name }\n    }))\n);"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1680,
+          -208
+        ],
+        "id": "c5d57326-743e-4aa0-897e-9da3d0b2e32f",
+        "name": "Code - Tags to Create"
+      },
+      {
+        "parameters": {
+          "jsCode": "const data = $('Extract - Classify\\'s Response').item.json;\n\nif (data.category && data.category.exists === false) {\n  return [\n    {\n      json: {\n        name: data.category.name\n      }\n    }\n  ];\n}\n\nreturn [];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1680,
+          -384
+        ],
+        "id": "156b8114-a1c8-4f9b-a843-584e599fb4d7",
+        "name": "Code - Category to Create",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1920,
+          -304
+        ],
+        "id": "a836f65f-f990-4e31-bbee-412da2bea79f",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Base classification (from Mistral)\nconst classification = $('Extract - Classify\\'s Response').all()[0].json;\n\n// 2. Existing WP terms\nconst wpTags = $('WP - Get Tags').all().map(i => i.json);\nconst wpCategories = $('WP - Get Categories').all().map(i => i.json);\n\n// 3. Created term responses (success + error)\nconst createdTerms = $input.all().map(i => i.json);\n\n// ---------- CATEGORY ----------\nlet categoryId = classification.category.id;\n\nif (!categoryId) {\n  // try from created responses\n  const createdCat = createdTerms.find(t => t.taxonomy === 'category');\n  if (createdCat?.id) {\n    categoryId = createdCat.id;\n  } else {\n    // fallback lookup\n    const found = wpCategories.find(\n      c => c.name.toLowerCase() === classification.category.name.toLowerCase()\n    );\n    if (found) categoryId = found.id;\n  }\n}\n\n// ---------- TAGS ----------\nconst tagIds = [];\n\nfor (const tag of classification.tags) {\n  if (tag.id) {\n    // already existed\n    tagIds.push(tag.id);\n    continue;\n  }\n\n  // 1. created successfully\n  const created = createdTerms.find(\n    t => t.name?.toLowerCase() === tag.name.toLowerCase()\n  );\n  if (created?.id) {\n    tagIds.push(created.id);\n    continue;\n  }\n\n  // 2. term_exists error → extract term_id\n  const errorItem = createdTerms.find(\n    t => t.error?.message?.includes(tag.name)\n  );\n  if (errorItem?.error?.message) {\n    const match = errorItem.error.message.match(/\"term_id\":(\\d+)/);\n    if (match) {\n      tagIds.push(Number(match[1]));\n      continue;\n    }\n  }\n\n  // 3. fallback lookup from WP\n  const found = wpTags.find(\n    t => t.name.toLowerCase() === tag.name.toLowerCase()\n  );\n  if (found) tagIds.push(found.id);\n}\n\nreturn {\n  json: {\n    category_id: categoryId,\n    tag_ids: [...new Set(tagIds)] // dedupe\n  }\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1264,
+          -96
+        ],
+        "id": "88828ca2-f63c-45ad-9234-ac22ad32d157",
+        "name": "Code - WP Category & Tags"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "seconds",
+                "secondsInterval": 3
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -720,
+          0
+        ],
+        "id": "96b17872-5487-4829-9155-15aa2adeea17",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "getAll",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "limit": 1,
+          "options": {
+            "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          -336,
+          0
+        ],
+        "id": "3b39969e-7c24-43d1-8205-c0f92d003050",
+        "name": "NocoDB - Get Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "update",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldName": "expired_date",
+                "fieldValue": "={{ $now.plus(5, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+              },
+              {
+                "fieldName": "id",
+                "fieldValue": "={{ $json.Id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          112,
+          -64
+        ],
+        "id": "aec254e3-e17f-4b14-8eef-92e4eded140c",
+        "name": "NocoDB - Update Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+                "leftValue": "={{ $json.expired_date }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -160,
+          0
+        ],
+        "id": "4936b425-cf06-484e-b4ab-4a83937388a7",
+        "name": "Filter - NocoDB"
+      }
+    ],
+    "connections": {
+      "Supabase - Get Content": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Get Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Response": {
+        "main": [
+          [
+            {
+              "node": "WP - Get Categories",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook to WP": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Update a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update a row": {
+        "main": [
+          []
+        ]
+      },
+      "Mistral - Rewrite Content": {
+        "main": [
+          [
+            {
+              "node": "Extract Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WP - Get Categories": {
+        "main": [
+          [
+            {
+              "node": "WP - Get Tags",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WP - Get Tags": {
+        "main": [
+          [
+            {
+              "node": "Mistral - Classify",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mistral - Classify": {
+        "main": [
+          [
+            {
+              "node": "Extract - Classify's Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WP - Post Categories": {
+        "main": [
+          [
+            {
+              "node": "WP - Post Tags",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract - Classify's Response": {
+        "main": [
+          [
+            {
+              "node": "Code - Category to Create",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Code - Tags to Create",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code - Category to Create": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code - Tags to Create": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "WP - Post Categories",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WP - Post Tags": {
+        "main": [
+          [
+            {
+              "node": "Code - WP Category & Tags",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code - WP Category & Tags": {
+        "main": [
+          [
+            {
+              "node": "Webhook to WP",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Supabase - Get Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Get Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Filter - NocoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Update Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Mistral - Rewrite Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter - NocoDB": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Update Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Mistral - Rewrite Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Aldo Dwi Kristian",
+    "name": "Version 23098278",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-12-30T07:52:54.239Z",
+      "createdAt": "2025-12-30T07:52:54.239Z",
+      "id": "R7zjoxHzKNYpQFsv",
+      "name": "WPBerita"
+    },
+    {
+      "updatedAt": "2025-12-30T07:52:49.699Z",
+      "createdAt": "2025-12-30T07:52:49.699Z",
+      "id": "QkSJdUEgO7TATGrA",
+      "name": "Glori AP"
+    }
+  ]
+}
