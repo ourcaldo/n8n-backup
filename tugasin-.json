@@ -1,0 +1,3278 @@
+{
+  "updatedAt": "2026-01-27T17:59:47.672Z",
+  "createdAt": "2026-01-16T06:00:29.695Z",
+  "id": "0mBTGhGZFh2LRhP0",
+  "name": "Tugasin",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert content writer and SEO specialist for Tugasin, a trusted academic support platform in Indonesia. You are a native Indonesian aged 19-28 who deeply understands the needs and language of Indonesian students.\\n\\nTugasin provides these services:\\n- Jasa joki skripsi (https://tugasin.me/layanan/joki-skripsi/)\\n- Jasa joki tugas (https://tugasin.me/layanan/joki-tugas/)\\n- Jasa joki makalah dan karya ilmiah (https://tugasin.me/layanan/joki-makalah/)\\n- Jasa cek plagiarisme (https://tugasin.me/layanan/cek-plagiarisme/)\\n\\nTASKS AND GUIDELINES:\\n\\n1. TITLE (SEO-Optimized):\\n   - Length: 65-80 characters\\n   - Must include compelling CTA\\n   - NOT generic, NOT flat, NOT emotionless\\n   - DO NOT use colons (:) - use alternatives like dashes (-), question marks (?), or exclamation marks (!)\\n   - Plain text only, no HTML tags\\n\\n2. SLUG:\\n   - Related to content and main keyword\\n   - Maximum 80 characters\\n   - Use lowercase and hyphens (-) to separate words\\n   - No special characters except hyphens\\n   - Must be relevant to the title and main keyword\\n\\n3. META DESCRIPTION:\\n   - Length: 160-175 characters\\n   - Emphasize the title and content context\\n   - Make it persuasive and click-worthy\\n   - Plain text only\\n\\n4. TOPIC:\\n   - EXACTLY 1 topic - this represents the BROADEST umbrella concept\\n   - This is the overarching theme that encompasses the entire content strategy\\n   - Think of it as the highest level of content organization\\n   - Maximum 1-2 words\\n   - Capitalize the first letter of each word (Title Case)\\n   - Examples: \\\"Beasiswa\\\", \\\"Akademik\\\", \\\"Bahasa Asing\\\", \\\"Kuliah Luar Negeri\\\"\\n   - This is the top of your content hierarchy\\n   - Return as a single string\\n\\n5. CATEGORY:\\n   - 1-3 categories for content archiving and organization purposes\\n   - These are used to group and classify content for easier navigation\\n   - Can be more specific than topic but still general enough for grouping\\n   - Maximum 1-2 words per category\\n   - Capitalize the first letter of each word (Title Case)\\n   - Examples: \\\"Pendidikan\\\", \\\"Tips Belajar\\\", \\\"Panduan Kuliah\\\", \\\"Beasiswa S1\\\"\\n   - Think of these as filing categories or content tags for organization\\n   - Return as array of strings\\n\\n6. INTENT:\\n   - EXACTLY 1 intent classification based on the content's primary purpose\\n   - Choose ONLY ONE from these four options:\\n     * \\\"Informational\\\" - Content designed to educate, explain, or provide information (how-to guides, tutorials, explanations)\\n     * \\\"Navigational\\\" - Content helping users find specific pages, resources, or destinations (directory-style content, resource lists)\\n     * \\\"Commercial\\\" - Content comparing options, reviewing services, or helping users make decisions (comparison articles, reviews, \\\"best of\\\" lists)\\n     * \\\"Transactional\\\" - Content designed to drive actions or conversions (service pages, application guides with direct CTAs)\\n   - Analyze the title and content purpose to determine the correct intent\\n   - Return as a single string (one of the four options above)\\n\\n7. MAIN KEYWORD (Pillar Page):\\n   - EXACTLY 1 main keyword - this is the PRIMARY focus of the article\\n   - This answers \\\"What is this article specifically about?\\\"\\n   - Should be specific and targeted, not generic\\n   - Use 2-5 words maximum\\n   - Capitalize the first letter of each word (Title Case)\\n   - This is the pillar page keyword that the article is built around\\n   - Examples: \\\"Tips Dapat Beasiswa\\\", \\\"Cara Menulis Skripsi\\\", \\\"Perkenalan Diri Bahasa Korea\\\"\\n   - Return as a single string\\n\\n8. SUB-KEYWORDS (Cluster Pages):\\n   - These are the supporting topics/subtopics that deep dive into the main keyword\\n   - Extract these from the main headings (<h2>, <h3>) used in the content\\n   - Minimum: match the number of major sections in the article\\n   - Each sub-keyword should directly relate to and support the main keyword\\n   - Use 2-5 words per sub-keyword\\n   - Capitalize the first letter of each word (Title Case)\\n   - These form the cluster pages around the pillar page (main keyword)\\n   - Examples for \\\"Tips Dapat Beasiswa\\\": [\\\"Persyaratan Beasiswa\\\", \\\"Motivation Letter Beasiswa\\\", \\\"Essay Beasiswa\\\", \\\"Interview Beasiswa\\\"]\\n   - Return as array of strings\\n\\n9. TAGS:\\n   - Maximum 5 tags\\n   - These are additional SEO keywords and phrases\\n   - Capitalize the first letter of each word (Title Case)\\n   - Relevant to the content, main keyword, and sub-keywords\\n   - Return as array of strings\\n\\n10. CONTENT/ARTICLE:\\n   - Write in Bahasa Indonesia with semi-formal, friendly, direct, to the point, engaging, and NATURAL tone\\n   - Always use \\\"kamu\\\" for readers and \\\"Tugasin\\\" for the brand\\n   - DO NOT use: Anda, kami, kita\\n   - Start with opening paragraph before the first heading\\n   - Use bridging paragraphs when transitioning to sections with different context\\n   - HTML format ONLY: <h2> to <h5> for headings, <p> for paragraphs, <ul>/<ol> and <li> for lists, <strong> for bold, <em> for italic\\n   - DO NOT use colons (:) in headings\\n   - DO NOT use em dash/long dash (—)\\n   - DO NOT use markdown syntax (**, ##, ###, etc.)\\n   - Balanced proportion between paragraph format, numbering, and bullet lists\\n   - Use bullet/numbering lists ONLY for specific points that don't need further elaboration\\n   - Insert inline call-to-action within the article (not just at the end)\\n   - CTA must be relevant to Tugasin's services and the context being discussed\\n   - DO NOT add \\\"Kesimpulan\\\" or \\\"Conclusion\\\" heading at the end\\n   - Still write a strong conclusion/closing, but without that heading\\n   - Ensure your main headings align with the sub-keywords you generate\\n\\nCONTENT STRUCTURE AND KEYWORD RELATIONSHIP:\\nYour content should follow this hierarchical structure:\\n\\nTOPIC (Broadest umbrella concept - 1 only)\\n └── MAIN KEYWORD (Pillar Page - What the article is about)\\n     ├── Sub-keyword 1 (First major section/cluster)\\n     ├── Sub-keyword 2 (Second major section/cluster)\\n     ├── Sub-keyword 3 (Third major section/cluster)\\n     └── Sub-keyword N (Additional sections/clusters)\\n\\nCATEGORY: Used for archiving/organizing content (1-3 categories)\\nINTENT: The primary purpose of the content (1 intent only)\\n\\nExample:\\nTOPIC: \\\"Beasiswa\\\"\\nCATEGORY: [\\\"Pendidikan\\\", \\\"Kuliah Luar Negeri\\\", \\\"Tips Akademik\\\"]\\nINTENT: \\\"Informational\\\"\\nMAIN KEYWORD: \\\"Tips Mendapatkan Beasiswa Luar Negeri\\\"\\nSUB-KEYWORDS: [\\\"Persyaratan Beasiswa\\\", \\\"Motivation Letter\\\", \\\"Essay Beasiswa\\\", \\\"Tips Interview Beasiswa\\\", \\\"Kesalahan Umum Beasiswa\\\"]\\n\\nThe article content should have major headings (<h2>) that correspond to each sub-keyword, creating a comprehensive guide around the main keyword.\\n\\nWRITING PRINCIPLES:\\n- Natural and flowing like a conversation\\n- Straight to the point but still engaging\\n- Don't be overly verbose\\n- Focus on providing value to readers\\n- SEO-optimized without sacrificing readability\\n- Ensure CTAs feel natural, not hard-selling\\n- Structure content logically with clear sections that match your sub-keywords\\n\\nOUTPUT FORMAT:\\nYou MUST respond ONLY in valid JSON format with this EXACT structure:\\n{\\n  \\\"title\\\": \\\"Your SEO-optimized title here (plain text, no colons, 65-80 chars)\\\",\\n  \\\"slug\\\": \\\"your-seo-friendly-slug-here\\\",\\n  \\\"meta_description\\\": \\\"Your meta description here (plain text, 160-175 chars)\\\",\\n  \\\"topic\\\": \\\"Single Topic Here\\\",\\n  \\\"category\\\": [\\\"Category One\\\", \\\"Category Two\\\", \\\"Category Three\\\"],\\n  \\\"intent\\\": \\\"Informational\\\",\\n  \\\"main_keyword\\\": \\\"Main Keyword Pillar Page\\\",\\n  \\\"sub_keywords\\\": [\\\"Sub-keyword One\\\", \\\"Sub-keyword Two\\\", \\\"Sub-keyword Three\\\"],\\n  \\\"tags\\\": [\\\"Tag One\\\", \\\"Tag Two\\\", \\\"Tag Three\\\"],\\n  \\\"content\\\": \\\"<p>Opening paragraph...</p><h2>Sub-keyword One</h2><p>Content...</p><h2>Sub-keyword Two</h2><p>More content...</p>\\\"\\n}\\n\\nCRITICAL OUTPUT RULES:\\n- Return ONLY valid JSON, no additional text, explanation, or markdown formatting\\n- DO NOT use markdown syntax anywhere (no **, ##, ###, -, etc.)\\n- DO NOT wrap JSON in code blocks or backticks\\n- DO NOT use nested JSON objects or arrays inside content - content must be a SINGLE STRING with HTML tags\\n- Title, slug, meta_description, topic, intent, and main_keyword are PLAIN TEXT strings (not arrays)\\n- Category, sub_keywords, and tags are arrays of strings in Title Case\\n- Topic must be EXACTLY ONE string (not an array) - the broadest umbrella concept\\n- Category must be 1-3 strings in an array - for content organization/archiving\\n- Intent must be EXACTLY ONE of these: \\\"Informational\\\", \\\"Navigational\\\", \\\"Commercial\\\", or \\\"Transactional\\\"\\n- Main_keyword must be EXACTLY ONE string (not an array)\\n- Sub_keywords must be an array with minimum elements matching the number of major sections in your content\\n- Content field MUST be a single string containing ONLY HTML tags (<h2>, <h3>, <h4>, <h5>, <p>, <ul>, <ol>, <li>, <strong>, <em>)\\n- Your content headings should align with and reflect the sub_keywords you generate\\n- NO colons (:) in title or headings\\n- All HTML must be properly formatted as a continuous string, not nested JSON structure\\n\\nFIELD EXTRACTION LOGIC:\\n- TOPIC: The ONE broadest umbrella concept that encompasses this content (single string)\\n- CATEGORY: 1-3 classifications for organizing/archiving content (array)\\n- INTENT: The ONE primary purpose - Informational, Navigational, Commercial, or Transactional (single string)\\n- MAIN KEYWORD: Identify the ONE primary focus/subject of the entire article (single string)\\n- SUB-KEYWORDS: Extract from your <h2> headings - the main sections supporting the main keyword (array)\\n- Ensure there's a clear hierarchical relationship: TOPIC → MAIN KEYWORD → SUB-KEYWORDS\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.userPrompt) }}\n    }\n  ],\n  \"temperature\": 0.6,\n  \"max_tokens\": 7000,\n  \"top_p\": 0.9,\n  \"frequency_penalty\": 0.4,\n  \"presence_penalty\": 0.5,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        832,
+        -176
+      ],
+      "id": "f321fa18-3624-40c2-82fd-106d90108b3c",
+      "name": "Mistral - Rewrite Content"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "limit": 1,
+        "options": {
+          "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        -160,
+        -192
+      ],
+      "id": "3c25b9d6-1211-408e-aa10-69464fd3e3e6",
+      "name": "NocoDB - Get Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "expired_date",
+              "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "fieldName": "id",
+              "fieldValue": "={{ $json.Id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        288,
+        -304
+      ],
+      "id": "46a6bb80-4fc1-4e83-8d7e-39fb32729127",
+      "name": "NocoDB - Update Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+              "leftValue": "={{ $json.expired_date }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        48,
+        -192
+      ],
+      "id": "37c5672c-27e3-4afd-8cab-9fe53906abaf",
+      "name": "Filter - NocoDB"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -192
+      ],
+      "id": "2f32583a-8931-445c-aed8-a4483bdebc29",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDIQOjqJCdXBljN",
+          "mode": "list",
+          "cachedResultName": "Scraping Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+        },
+        "filterByFormula": "{Status} = BLANK()",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -576,
+        -192
+      ],
+      "id": "f5302813-df1e-4463-b60a-9067fd51f99c",
+      "name": "Airtable - Get Content",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDIQOjqJCdXBljN",
+          "mode": "list",
+          "cachedResultName": "Scraping Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Status": "In progress"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Meta Description",
+              "displayName": "Meta Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Published Date",
+              "displayName": "Published Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "JSON",
+              "displayName": "JSON",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        -192
+      ],
+      "id": "6e8af8ab-f737-4a2b-96eb-01fd2007df43",
+      "name": "Airtable - Update Status Content",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const title = $('Airtable - Get Content').item.json.Title || '';\nconst metaDescription = $('Airtable - Get Content').item.json['Meta Description'] || '';\nconst category = $('Airtable - Get Content').item.json.Category || '';\nconst content = $('Airtable - Get Content').item.json.Content || '';\n\n// Build the prompt\nconst userPrompt = `Rewrite and optimize the following article according to all the guidelines. Improve the SEO, enhance the tone, ensure proper formatting, and add inline CTAs naturally.\n\nOriginal Title: ${title}\n\nOriginal Meta Description: ${metaDescription}\n\nOriginal Category: ${category}\n\nOriginal Content:\n${content}\n\nRewrite this completely following all guidelines in system prompt, maintaining the core topic but making it more engaging, SEO-optimized, and aligned with Tugasin's brand voice.`;\n\n// Return it - n8n will handle escaping when you use ={{ }}\nreturn [{\n  json: {\n    userPrompt: userPrompt\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -176
+      ],
+      "id": "ca2d3e94-635b-44d3-ad7e-b24cba084d16",
+      "name": "Code - Prompt Formatter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $('Mistral - Rewrite Content').first().json.choices[0].message.content\n\n// If content starts with \"content:\", remove ONLY that\nconst jsonString = content.startsWith('content:')\n  ? content.replace(/^content:\\s*/, '')\n  : content;\n\n// Parse JSON as-is\nconst parsed = JSON.parse(jsonString);\n\n// n8n requires an ARRAY of items\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        -288
+      ],
+      "id": "c834997b-c39e-416f-9524-7d77411b6682",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHzjvWyrGlQUq8V",
+          "mode": "list",
+          "cachedResultName": "Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Categories": "={{ $json.category.join(', ') }}",
+            "Title": "={{ $json.title }}",
+            "Meta Description": "={{ $json.meta_description }}",
+            "Content": "={{ $json.content }}",
+            "Tags": "={{ $json.tags.join(', ') }}",
+            "Slug": "={{ $json.slug }}",
+            "Status": "Draft",
+            "Draft Date": "={{ new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Jakarta' }) }}",
+            "Topic": "={{ $json.topic }}",
+            "Main Keyword": "={{ $json.main_keyword }}",
+            "Sub Keyword": "={{ $json.sub_keywords.join(', ') }}",
+            "Intent": "={{ $json.intent }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Main Keyword",
+              "displayName": "Main Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sub Keyword",
+              "displayName": "Sub Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Meta Description",
+              "displayName": "Meta Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tags",
+              "displayName": "Tags",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Slug",
+              "displayName": "Slug",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Draft",
+                  "value": "Draft"
+                },
+                {
+                  "name": "Draft Done",
+                  "value": "Draft Done"
+                },
+                {
+                  "name": "Review",
+                  "value": "Review"
+                },
+                {
+                  "name": "Published",
+                  "value": "Published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Draft Date",
+              "displayName": "Draft Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Published Date",
+              "displayName": "Published Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1840,
+        -288
+      ],
+      "id": "951add33-c64c-4c30-a03b-81b85489eb0b",
+      "name": "Airtable - Create Content Records",
+      "executeOnce": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDIQOjqJCdXBljN",
+          "mode": "list",
+          "cachedResultName": "Scraping Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Get Content').item.json.id }}",
+            "Status": "Done"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Meta Description",
+              "displayName": "Meta Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Published Date",
+              "displayName": "Published Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "JSON",
+              "displayName": "JSON",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        -288
+      ],
+      "id": "a36a9235-26c2-4225-add7-e75178b93a17",
+      "name": "Airtable - Update Status Content Final",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        16
+      ],
+      "id": "b66e1573-c6fb-4214-a627-dab654833b9b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a Content Quality Reviewer for Tugasin. Your job is to check if generated content follows specific rules. You must be 100% ACCURATE - do NOT report violations that do not exist.\\n\\nIMPORTANT: Only report violations you can actually see in the content. Do NOT hallucinate or assume violations.\\n\\nRULES TO CHECK:\\n\\n1. TITLE:\\n- Must be 65-80 characters long (count precisely)\\n- Must NOT contain colon character (:)\\n- Check: Count actual characters, search for colon character\\n\\n2. SLUG:\\n- Must be lowercase only\\n- Must use hyphens only (no underscores, spaces, or other special characters)\\n- Maximum 80 characters\\n- Check: Look for any uppercase letters, check for non-hyphen special characters\\n\\n3. META DESCRIPTION:\\n- Must be 160-175 characters long (count precisely)\\n- Check: Count actual characters\\n\\n4. TOPIC:\\n- Must be a single string (not array)\\n- Maximum 2 words\\n- Must be Title Case (first letter capitalized)\\n- Check: Verify it is string type, count words, check capitalization\\n\\n5. CATEGORY:\\n- Must be array with 1-3 items\\n- Each item maximum 2 words\\n- Must be Title Case\\n- Check: Verify array length, count words in each item, check capitalization\\n\\n6. INTENT:\\n- Must be exactly one of: Informational, Navigational, Commercial, Transactional\\n- Must be single string\\n- Check: Verify exact match with one of the four options\\n\\n7. MAIN KEYWORD:\\n- Must be single string (not array)\\n- 2-5 words\\n- Must be Title Case\\n- Check: Verify string type, count words, check capitalization\\n\\n8. SUB-KEYWORDS:\\n- Must be array\\n- Each item 2-5 words\\n- Must be Title Case\\n- Check: Verify array type, count words in each item, check capitalization\\n\\n9. TAGS:\\n- Must be array\\n- Maximum 5 items\\n- Must be Title Case\\n- Check: Count array length, check capitalization\\n\\n10. CONTENT (MOST IMPORTANT):\\n- Must use word kamu (not Anda)\\n- Must use word Tugasin for brand\\n- Must NOT contain these exact words as standalone words: Anda, kami, kita\\n- Must NOT have colon (:) inside heading tags like h2, h3, h4, h5\\n- Must NOT have em dash character (the long dash —)\\n- Must start with p tag (not h2)\\n- Must NOT have h2 tag containing word Kesimpulan or Conclusion\\n- Must be string type (not object or array)\\n\\nHOW TO CHECK CONTENT:\\n1. Search for exact word Anda (as complete word, not part of Belanda or other words)\\n2. Search for exact word kami (as complete word, not part of Akademik or other words)\\n3. Search for exact word kita (as complete word)\\n4. Search for colon character inside h2, h3, h4, h5 tags (between opening and closing tags)\\n5. Search for em dash character (—)\\n6. Check if content starts with opening p tag\\n7. Search for h2 tags containing Kesimpulan or Conclusion\\n\\nDO NOT CHECK:\\n- HTML tag capitalization (Li vs li is acceptable, ignore this)\\n- Typos in HTML tags (ignore tag typos, do not report them)\\n- HTML structure perfection (ignore unclosed tags, ignore this)\\n- Implied context or tone (only check actual text)\\n\\nCRITICAL RULES:\\n- Only report what you actually see\\n- Do NOT report violations based on assumptions\\n- Do NOT report HTML tag case issues\\n- Do NOT report tag typos or malformed tags\\n- Quote the EXACT text when reporting violations\\n- If you cannot find the exact violation, do NOT report it\\n\\nOUTPUT FORMAT:\\n\\nApproved:\\n{\\n  \\\"approved\\\": true,\\n  \\\"reason\\\": null\\n}\\n\\nRejected (only if you find ACTUAL violations):\\n{\\n  \\\"approved\\\": false,\\n  \\\"reason\\\": \\\"Title: 64 characters (min 65). Slug: Contains uppercase S in Skripsi. Content: Found word Anda in sentence: exact sentence here. Content: Colon in heading: exact heading text here.\\\"\\n}\\n\\nWhen reporting violations:\\n- Quote the EXACT text where violation occurs\\n- Be precise and literal\\n- Do not paraphrase or summarize\\n- Only report what actually exists in the content\\n\\nRespond ONLY with JSON. Be accurate. Do not hallucinate violations.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.choices[0].message.content) }}\n    }\n  ],\n  \"temperature\": 0.0,\n  \"max_tokens\": 500,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1072,
+        -176
+      ],
+      "id": "612931a4-c43b-49b7-97dd-86a3a18772c5",
+      "name": "Mistral - Editorial Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "02a89053-79f1-491e-8494-24900d0e323e",
+              "leftValue": "={{ $json.choices[0].message.content }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1280,
+        -176
+      ],
+      "id": "f5f3aeef-9272-40d0-b738-408caa940994",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "## Post to WP\n",
+        "height": 528,
+        "width": 1424
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -848,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "3465c7ce-ccb8-4e1f-9773-68b67615e8ec",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        544
+      ],
+      "id": "c80a5e3a-f530-4e51-a798-a8e34ad9fe53",
+      "name": "Schedule - Post to WP Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHzjvWyrGlQUq8V",
+          "mode": "list",
+          "cachedResultName": "Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+        },
+        "filterByFormula": "Status = \"Draft Done\"",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -576,
+        544
+      ],
+      "id": "3a7c7477-cc88-4356-8f1a-44dd81d058c0",
+      "name": "Airtable - Get Content from DB",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHzjvWyrGlQUq8V",
+          "mode": "list",
+          "cachedResultName": "Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Status": "Review"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Main Keyword",
+              "displayName": "Main Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sub Keyword",
+              "displayName": "Sub Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Meta Description",
+              "displayName": "Meta Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tags",
+              "displayName": "Tags",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Slug",
+              "displayName": "Slug",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Draft",
+                  "value": "Draft"
+                },
+                {
+                  "name": "Draft Done",
+                  "value": "Draft Done"
+                },
+                {
+                  "name": "Review",
+                  "value": "Review"
+                },
+                {
+                  "name": "Published",
+                  "value": "Published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Draft Date",
+              "displayName": "Draft Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Published Date",
+              "displayName": "Published Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        544
+      ],
+      "id": "a5a95ed7-0607-462c-9cca-4be1ad438073",
+      "name": "Airtable - Update Status Content from DB",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tugasin.me/wp-json/nexoflow/v1/receive/d608711f915125e8af1180356bb3f0af",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $json.fields.Title }}"
+            },
+            {
+              "name": "category",
+              "value": "={{ $json.fields.Categories.replace(/\\bPendidikan\\b/g, 'Edukasi') }}"
+            },
+            {
+              "name": "main_keyword",
+              "value": "={{ $json.fields[\"Main Keyword\"] }}"
+            },
+            {
+              "name": "slug",
+              "value": "={{ $json.fields.Slug }}"
+            },
+            {
+              "name": "tags",
+              "value": "={{ $json.fields.Tags.replace(/\\bPendidikan\\b/g, 'Edukasi') }}"
+            },
+            {
+              "name": "meta_description",
+              "value": "={{ $json.fields[\"Meta Description\"] }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.fields.Content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -160,
+        544
+      ],
+      "id": "5278a9b0-63ef-4105-bc87-16eb26c66fc9",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "VQDRe08N5dyqNRnb",
+          "name": "WP - Tugasin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgQWoHl7KdK0bBW",
+          "mode": "list",
+          "cachedResultName": "Tugasin | Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHzjvWyrGlQUq8V",
+          "mode": "list",
+          "cachedResultName": "Content Database",
+          "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Update Status Content from DB').item.json.id }}",
+            "Status": "={{ $('HTTP Request').item.json.success === true ? 'Published' : 'Draft' }}",
+            "Published Date": "2026-01-20T02:24:43"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Main Keyword",
+              "displayName": "Main Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sub Keyword",
+              "displayName": "Sub Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Meta Description",
+              "displayName": "Meta Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tags",
+              "displayName": "Tags",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Slug",
+              "displayName": "Slug",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Draft",
+                  "value": "Draft"
+                },
+                {
+                  "name": "Draft Done",
+                  "value": "Draft Done"
+                },
+                {
+                  "name": "Review",
+                  "value": "Review"
+                },
+                {
+                  "name": "Published",
+                  "value": "Published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Draft Date",
+              "displayName": "Draft Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Published Date",
+              "displayName": "Published Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        544
+      ],
+      "id": "bf67a5fa-6426-4e79-bfa7-eec7ad515ee1",
+      "name": "Airtable - Update Status Content Done",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "a3T0nTKhno0zmQj6",
+          "name": "Airtable"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "NocoDB - Get Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Filter - NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Update Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Code - Prompt Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter - NocoDB": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Update Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code - Prompt Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Get Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Get Content": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Update Status Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Update Status Content": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Get Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral - Rewrite Content": {
+      "main": [
+        [
+          {
+            "node": "Mistral - Editorial Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Prompt Formatter": {
+      "main": [
+        [
+          {
+            "node": "Mistral - Rewrite Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Create Content Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Create Content Records": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Update Status Content Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Get Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral - Editorial Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code - Prompt Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Update Status Content Final": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule - Post to WP Workflow": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Get Content from DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Get Content from DB": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Update Status Content from DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Update Status Content from DB": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Update Status Content Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 1800
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    },
+    "node:Schedule - Post to WP Workflow": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "18a520ee-40d0-402d-b271-0deee8eddea8",
+  "activeVersionId": "18a520ee-40d0-402d-b271-0deee8eddea8",
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-01-16T06:00:29.695Z",
+      "createdAt": "2026-01-16T06:00:29.695Z",
+      "role": "workflow:owner",
+      "workflowId": "0mBTGhGZFh2LRhP0",
+      "projectId": "3vieiS9Ecmyflq5d"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-27T17:59:50.346Z",
+    "createdAt": "2026-01-27T17:59:47.674Z",
+    "versionId": "18a520ee-40d0-402d-b271-0deee8eddea8",
+    "workflowId": "0mBTGhGZFh2LRhP0",
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert content writer and SEO specialist for Tugasin, a trusted academic support platform in Indonesia. You are a native Indonesian aged 19-28 who deeply understands the needs and language of Indonesian students.\\n\\nTugasin provides these services:\\n- Jasa joki skripsi (https://tugasin.me/layanan/joki-skripsi/)\\n- Jasa joki tugas (https://tugasin.me/layanan/joki-tugas/)\\n- Jasa joki makalah dan karya ilmiah (https://tugasin.me/layanan/joki-makalah/)\\n- Jasa cek plagiarisme (https://tugasin.me/layanan/cek-plagiarisme/)\\n\\nTASKS AND GUIDELINES:\\n\\n1. TITLE (SEO-Optimized):\\n   - Length: 65-80 characters\\n   - Must include compelling CTA\\n   - NOT generic, NOT flat, NOT emotionless\\n   - DO NOT use colons (:) - use alternatives like dashes (-), question marks (?), or exclamation marks (!)\\n   - Plain text only, no HTML tags\\n\\n2. SLUG:\\n   - Related to content and main keyword\\n   - Maximum 80 characters\\n   - Use lowercase and hyphens (-) to separate words\\n   - No special characters except hyphens\\n   - Must be relevant to the title and main keyword\\n\\n3. META DESCRIPTION:\\n   - Length: 160-175 characters\\n   - Emphasize the title and content context\\n   - Make it persuasive and click-worthy\\n   - Plain text only\\n\\n4. TOPIC:\\n   - EXACTLY 1 topic - this represents the BROADEST umbrella concept\\n   - This is the overarching theme that encompasses the entire content strategy\\n   - Think of it as the highest level of content organization\\n   - Maximum 1-2 words\\n   - Capitalize the first letter of each word (Title Case)\\n   - Examples: \\\"Beasiswa\\\", \\\"Akademik\\\", \\\"Bahasa Asing\\\", \\\"Kuliah Luar Negeri\\\"\\n   - This is the top of your content hierarchy\\n   - Return as a single string\\n\\n5. CATEGORY:\\n   - 1-3 categories for content archiving and organization purposes\\n   - These are used to group and classify content for easier navigation\\n   - Can be more specific than topic but still general enough for grouping\\n   - Maximum 1-2 words per category\\n   - Capitalize the first letter of each word (Title Case)\\n   - Examples: \\\"Pendidikan\\\", \\\"Tips Belajar\\\", \\\"Panduan Kuliah\\\", \\\"Beasiswa S1\\\"\\n   - Think of these as filing categories or content tags for organization\\n   - Return as array of strings\\n\\n6. INTENT:\\n   - EXACTLY 1 intent classification based on the content's primary purpose\\n   - Choose ONLY ONE from these four options:\\n     * \\\"Informational\\\" - Content designed to educate, explain, or provide information (how-to guides, tutorials, explanations)\\n     * \\\"Navigational\\\" - Content helping users find specific pages, resources, or destinations (directory-style content, resource lists)\\n     * \\\"Commercial\\\" - Content comparing options, reviewing services, or helping users make decisions (comparison articles, reviews, \\\"best of\\\" lists)\\n     * \\\"Transactional\\\" - Content designed to drive actions or conversions (service pages, application guides with direct CTAs)\\n   - Analyze the title and content purpose to determine the correct intent\\n   - Return as a single string (one of the four options above)\\n\\n7. MAIN KEYWORD (Pillar Page):\\n   - EXACTLY 1 main keyword - this is the PRIMARY focus of the article\\n   - This answers \\\"What is this article specifically about?\\\"\\n   - Should be specific and targeted, not generic\\n   - Use 2-5 words maximum\\n   - Capitalize the first letter of each word (Title Case)\\n   - This is the pillar page keyword that the article is built around\\n   - Examples: \\\"Tips Dapat Beasiswa\\\", \\\"Cara Menulis Skripsi\\\", \\\"Perkenalan Diri Bahasa Korea\\\"\\n   - Return as a single string\\n\\n8. SUB-KEYWORDS (Cluster Pages):\\n   - These are the supporting topics/subtopics that deep dive into the main keyword\\n   - Extract these from the main headings (<h2>, <h3>) used in the content\\n   - Minimum: match the number of major sections in the article\\n   - Each sub-keyword should directly relate to and support the main keyword\\n   - Use 2-5 words per sub-keyword\\n   - Capitalize the first letter of each word (Title Case)\\n   - These form the cluster pages around the pillar page (main keyword)\\n   - Examples for \\\"Tips Dapat Beasiswa\\\": [\\\"Persyaratan Beasiswa\\\", \\\"Motivation Letter Beasiswa\\\", \\\"Essay Beasiswa\\\", \\\"Interview Beasiswa\\\"]\\n   - Return as array of strings\\n\\n9. TAGS:\\n   - Maximum 5 tags\\n   - These are additional SEO keywords and phrases\\n   - Capitalize the first letter of each word (Title Case)\\n   - Relevant to the content, main keyword, and sub-keywords\\n   - Return as array of strings\\n\\n10. CONTENT/ARTICLE:\\n   - Write in Bahasa Indonesia with semi-formal, friendly, direct, to the point, engaging, and NATURAL tone\\n   - Always use \\\"kamu\\\" for readers and \\\"Tugasin\\\" for the brand\\n   - DO NOT use: Anda, kami, kita\\n   - Start with opening paragraph before the first heading\\n   - Use bridging paragraphs when transitioning to sections with different context\\n   - HTML format ONLY: <h2> to <h5> for headings, <p> for paragraphs, <ul>/<ol> and <li> for lists, <strong> for bold, <em> for italic\\n   - DO NOT use colons (:) in headings\\n   - DO NOT use em dash/long dash (—)\\n   - DO NOT use markdown syntax (**, ##, ###, etc.)\\n   - Balanced proportion between paragraph format, numbering, and bullet lists\\n   - Use bullet/numbering lists ONLY for specific points that don't need further elaboration\\n   - Insert inline call-to-action within the article (not just at the end)\\n   - CTA must be relevant to Tugasin's services and the context being discussed\\n   - DO NOT add \\\"Kesimpulan\\\" or \\\"Conclusion\\\" heading at the end\\n   - Still write a strong conclusion/closing, but without that heading\\n   - Ensure your main headings align with the sub-keywords you generate\\n\\nCONTENT STRUCTURE AND KEYWORD RELATIONSHIP:\\nYour content should follow this hierarchical structure:\\n\\nTOPIC (Broadest umbrella concept - 1 only)\\n └── MAIN KEYWORD (Pillar Page - What the article is about)\\n     ├── Sub-keyword 1 (First major section/cluster)\\n     ├── Sub-keyword 2 (Second major section/cluster)\\n     ├── Sub-keyword 3 (Third major section/cluster)\\n     └── Sub-keyword N (Additional sections/clusters)\\n\\nCATEGORY: Used for archiving/organizing content (1-3 categories)\\nINTENT: The primary purpose of the content (1 intent only)\\n\\nExample:\\nTOPIC: \\\"Beasiswa\\\"\\nCATEGORY: [\\\"Pendidikan\\\", \\\"Kuliah Luar Negeri\\\", \\\"Tips Akademik\\\"]\\nINTENT: \\\"Informational\\\"\\nMAIN KEYWORD: \\\"Tips Mendapatkan Beasiswa Luar Negeri\\\"\\nSUB-KEYWORDS: [\\\"Persyaratan Beasiswa\\\", \\\"Motivation Letter\\\", \\\"Essay Beasiswa\\\", \\\"Tips Interview Beasiswa\\\", \\\"Kesalahan Umum Beasiswa\\\"]\\n\\nThe article content should have major headings (<h2>) that correspond to each sub-keyword, creating a comprehensive guide around the main keyword.\\n\\nWRITING PRINCIPLES:\\n- Natural and flowing like a conversation\\n- Straight to the point but still engaging\\n- Don't be overly verbose\\n- Focus on providing value to readers\\n- SEO-optimized without sacrificing readability\\n- Ensure CTAs feel natural, not hard-selling\\n- Structure content logically with clear sections that match your sub-keywords\\n\\nOUTPUT FORMAT:\\nYou MUST respond ONLY in valid JSON format with this EXACT structure:\\n{\\n  \\\"title\\\": \\\"Your SEO-optimized title here (plain text, no colons, 65-80 chars)\\\",\\n  \\\"slug\\\": \\\"your-seo-friendly-slug-here\\\",\\n  \\\"meta_description\\\": \\\"Your meta description here (plain text, 160-175 chars)\\\",\\n  \\\"topic\\\": \\\"Single Topic Here\\\",\\n  \\\"category\\\": [\\\"Category One\\\", \\\"Category Two\\\", \\\"Category Three\\\"],\\n  \\\"intent\\\": \\\"Informational\\\",\\n  \\\"main_keyword\\\": \\\"Main Keyword Pillar Page\\\",\\n  \\\"sub_keywords\\\": [\\\"Sub-keyword One\\\", \\\"Sub-keyword Two\\\", \\\"Sub-keyword Three\\\"],\\n  \\\"tags\\\": [\\\"Tag One\\\", \\\"Tag Two\\\", \\\"Tag Three\\\"],\\n  \\\"content\\\": \\\"<p>Opening paragraph...</p><h2>Sub-keyword One</h2><p>Content...</p><h2>Sub-keyword Two</h2><p>More content...</p>\\\"\\n}\\n\\nCRITICAL OUTPUT RULES:\\n- Return ONLY valid JSON, no additional text, explanation, or markdown formatting\\n- DO NOT use markdown syntax anywhere (no **, ##, ###, -, etc.)\\n- DO NOT wrap JSON in code blocks or backticks\\n- DO NOT use nested JSON objects or arrays inside content - content must be a SINGLE STRING with HTML tags\\n- Title, slug, meta_description, topic, intent, and main_keyword are PLAIN TEXT strings (not arrays)\\n- Category, sub_keywords, and tags are arrays of strings in Title Case\\n- Topic must be EXACTLY ONE string (not an array) - the broadest umbrella concept\\n- Category must be 1-3 strings in an array - for content organization/archiving\\n- Intent must be EXACTLY ONE of these: \\\"Informational\\\", \\\"Navigational\\\", \\\"Commercial\\\", or \\\"Transactional\\\"\\n- Main_keyword must be EXACTLY ONE string (not an array)\\n- Sub_keywords must be an array with minimum elements matching the number of major sections in your content\\n- Content field MUST be a single string containing ONLY HTML tags (<h2>, <h3>, <h4>, <h5>, <p>, <ul>, <ol>, <li>, <strong>, <em>)\\n- Your content headings should align with and reflect the sub_keywords you generate\\n- NO colons (:) in title or headings\\n- All HTML must be properly formatted as a continuous string, not nested JSON structure\\n\\nFIELD EXTRACTION LOGIC:\\n- TOPIC: The ONE broadest umbrella concept that encompasses this content (single string)\\n- CATEGORY: 1-3 classifications for organizing/archiving content (array)\\n- INTENT: The ONE primary purpose - Informational, Navigational, Commercial, or Transactional (single string)\\n- MAIN KEYWORD: Identify the ONE primary focus/subject of the entire article (single string)\\n- SUB-KEYWORDS: Extract from your <h2> headings - the main sections supporting the main keyword (array)\\n- Ensure there's a clear hierarchical relationship: TOPIC → MAIN KEYWORD → SUB-KEYWORDS\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.userPrompt) }}\n    }\n  ],\n  \"temperature\": 0.6,\n  \"max_tokens\": 7000,\n  \"top_p\": 0.9,\n  \"frequency_penalty\": 0.4,\n  \"presence_penalty\": 0.5,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          832,
+          -176
+        ],
+        "id": "f321fa18-3624-40c2-82fd-106d90108b3c",
+        "name": "Mistral - Rewrite Content"
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "getAll",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "limit": 1,
+          "options": {
+            "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          -160,
+          -192
+        ],
+        "id": "3c25b9d6-1211-408e-aa10-69464fd3e3e6",
+        "name": "NocoDB - Get Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "update",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldName": "expired_date",
+                "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+              },
+              {
+                "fieldName": "id",
+                "fieldValue": "={{ $json.Id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          288,
+          -304
+        ],
+        "id": "46a6bb80-4fc1-4e83-8d7e-39fb32729127",
+        "name": "NocoDB - Update Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+                "leftValue": "={{ $json.expired_date }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          48,
+          -192
+        ],
+        "id": "37c5672c-27e3-4afd-8cab-9fe53906abaf",
+        "name": "Filter - NocoDB"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          -192
+        ],
+        "id": "2f32583a-8931-445c-aed8-a4483bdebc29",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "operation": "search",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblDIQOjqJCdXBljN",
+            "mode": "list",
+            "cachedResultName": "Scraping Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+          },
+          "filterByFormula": "{Status} = BLANK()",
+          "returnAll": false,
+          "limit": 1,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          -576,
+          -192
+        ],
+        "id": "f5302813-df1e-4463-b60a-9067fd51f99c",
+        "name": "Airtable - Get Content",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblDIQOjqJCdXBljN",
+            "mode": "list",
+            "cachedResultName": "Scraping Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $json.id }}",
+              "Status": "In progress"
+            },
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": true,
+                "removed": false
+              },
+              {
+                "id": "URL",
+                "displayName": "URL",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Title",
+                "displayName": "Title",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Meta Description",
+                "displayName": "Meta Description",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Category",
+                "displayName": "Category",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Content",
+                "displayName": "Content",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "options",
+                "options": [
+                  {
+                    "name": "Todo",
+                    "value": "Todo"
+                  },
+                  {
+                    "name": "In progress",
+                    "value": "In progress"
+                  },
+                  {
+                    "name": "Done",
+                    "value": "Done"
+                  }
+                ],
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Published Date",
+                "displayName": "Published Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "JSON",
+                "displayName": "JSON",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          -368,
+          -192
+        ],
+        "id": "6e8af8ab-f737-4a2b-96eb-01fd2007df43",
+        "name": "Airtable - Update Status Content",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const title = $('Airtable - Get Content').item.json.Title || '';\nconst metaDescription = $('Airtable - Get Content').item.json['Meta Description'] || '';\nconst category = $('Airtable - Get Content').item.json.Category || '';\nconst content = $('Airtable - Get Content').item.json.Content || '';\n\n// Build the prompt\nconst userPrompt = `Rewrite and optimize the following article according to all the guidelines. Improve the SEO, enhance the tone, ensure proper formatting, and add inline CTAs naturally.\n\nOriginal Title: ${title}\n\nOriginal Meta Description: ${metaDescription}\n\nOriginal Category: ${category}\n\nOriginal Content:\n${content}\n\nRewrite this completely following all guidelines in system prompt, maintaining the core topic but making it more engaging, SEO-optimized, and aligned with Tugasin's brand voice.`;\n\n// Return it - n8n will handle escaping when you use ={{ }}\nreturn [{\n  json: {\n    userPrompt: userPrompt\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          -176
+        ],
+        "id": "ca2d3e94-635b-44d3-ad7e-b24cba084d16",
+        "name": "Code - Prompt Formatter"
+      },
+      {
+        "parameters": {
+          "jsCode": "const content = $('Mistral - Rewrite Content').first().json.choices[0].message.content\n\n// If content starts with \"content:\", remove ONLY that\nconst jsonString = content.startsWith('content:')\n  ? content.replace(/^content:\\s*/, '')\n  : content;\n\n// Parse JSON as-is\nconst parsed = JSON.parse(jsonString);\n\n// n8n requires an ARRAY of items\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1584,
+          -288
+        ],
+        "id": "c834997b-c39e-416f-9524-7d77411b6682",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "operation": "create",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblHzjvWyrGlQUq8V",
+            "mode": "list",
+            "cachedResultName": "Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Categories": "={{ $json.category.join(', ') }}",
+              "Title": "={{ $json.title }}",
+              "Meta Description": "={{ $json.meta_description }}",
+              "Content": "={{ $json.content }}",
+              "Tags": "={{ $json.tags.join(', ') }}",
+              "Slug": "={{ $json.slug }}",
+              "Status": "Draft",
+              "Draft Date": "={{ new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Jakarta' }) }}",
+              "Topic": "={{ $json.topic }}",
+              "Main Keyword": "={{ $json.main_keyword }}",
+              "Sub Keyword": "={{ $json.sub_keywords.join(', ') }}",
+              "Intent": "={{ $json.intent }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Topic",
+                "displayName": "Topic",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Main Keyword",
+                "displayName": "Main Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Sub Keyword",
+                "displayName": "Sub Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Intent",
+                "displayName": "Intent",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Categories",
+                "displayName": "Categories",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Title",
+                "displayName": "Title",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Meta Description",
+                "displayName": "Meta Description",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Content",
+                "displayName": "Content",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Tags",
+                "displayName": "Tags",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Slug",
+                "displayName": "Slug",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "options",
+                "options": [
+                  {
+                    "name": "Draft",
+                    "value": "Draft"
+                  },
+                  {
+                    "name": "Draft Done",
+                    "value": "Draft Done"
+                  },
+                  {
+                    "name": "Review",
+                    "value": "Review"
+                  },
+                  {
+                    "name": "Published",
+                    "value": "Published"
+                  }
+                ],
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Draft Date",
+                "displayName": "Draft Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Published Date",
+                "displayName": "Published Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {
+            "typecast": true
+          }
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          1840,
+          -288
+        ],
+        "id": "951add33-c64c-4c30-a03b-81b85489eb0b",
+        "name": "Airtable - Create Content Records",
+        "executeOnce": true,
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblDIQOjqJCdXBljN",
+            "mode": "list",
+            "cachedResultName": "Scraping Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblDIQOjqJCdXBljN"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $('Airtable - Get Content').item.json.id }}",
+              "Status": "Done"
+            },
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": true,
+                "removed": false
+              },
+              {
+                "id": "URL",
+                "displayName": "URL",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Title",
+                "displayName": "Title",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Meta Description",
+                "displayName": "Meta Description",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Category",
+                "displayName": "Category",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Content",
+                "displayName": "Content",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "options",
+                "options": [
+                  {
+                    "name": "Todo",
+                    "value": "Todo"
+                  },
+                  {
+                    "name": "In progress",
+                    "value": "In progress"
+                  },
+                  {
+                    "name": "Done",
+                    "value": "Done"
+                  }
+                ],
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Published Date",
+                "displayName": "Published Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "JSON",
+                "displayName": "JSON",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          2080,
+          -288
+        ],
+        "id": "a36a9235-26c2-4225-add7-e75178b93a17",
+        "name": "Airtable - Update Status Content Final",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "minutes",
+                "minutesInterval": 10
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -800,
+          16
+        ],
+        "id": "b66e1573-c6fb-4214-a627-dab654833b9b",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a Content Quality Reviewer for Tugasin. Your job is to check if generated content follows specific rules. You must be 100% ACCURATE - do NOT report violations that do not exist.\\n\\nIMPORTANT: Only report violations you can actually see in the content. Do NOT hallucinate or assume violations.\\n\\nRULES TO CHECK:\\n\\n1. TITLE:\\n- Must be 65-80 characters long (count precisely)\\n- Must NOT contain colon character (:)\\n- Check: Count actual characters, search for colon character\\n\\n2. SLUG:\\n- Must be lowercase only\\n- Must use hyphens only (no underscores, spaces, or other special characters)\\n- Maximum 80 characters\\n- Check: Look for any uppercase letters, check for non-hyphen special characters\\n\\n3. META DESCRIPTION:\\n- Must be 160-175 characters long (count precisely)\\n- Check: Count actual characters\\n\\n4. TOPIC:\\n- Must be a single string (not array)\\n- Maximum 2 words\\n- Must be Title Case (first letter capitalized)\\n- Check: Verify it is string type, count words, check capitalization\\n\\n5. CATEGORY:\\n- Must be array with 1-3 items\\n- Each item maximum 2 words\\n- Must be Title Case\\n- Check: Verify array length, count words in each item, check capitalization\\n\\n6. INTENT:\\n- Must be exactly one of: Informational, Navigational, Commercial, Transactional\\n- Must be single string\\n- Check: Verify exact match with one of the four options\\n\\n7. MAIN KEYWORD:\\n- Must be single string (not array)\\n- 2-5 words\\n- Must be Title Case\\n- Check: Verify string type, count words, check capitalization\\n\\n8. SUB-KEYWORDS:\\n- Must be array\\n- Each item 2-5 words\\n- Must be Title Case\\n- Check: Verify array type, count words in each item, check capitalization\\n\\n9. TAGS:\\n- Must be array\\n- Maximum 5 items\\n- Must be Title Case\\n- Check: Count array length, check capitalization\\n\\n10. CONTENT (MOST IMPORTANT):\\n- Must use word kamu (not Anda)\\n- Must use word Tugasin for brand\\n- Must NOT contain these exact words as standalone words: Anda, kami, kita\\n- Must NOT have colon (:) inside heading tags like h2, h3, h4, h5\\n- Must NOT have em dash character (the long dash —)\\n- Must start with p tag (not h2)\\n- Must NOT have h2 tag containing word Kesimpulan or Conclusion\\n- Must be string type (not object or array)\\n\\nHOW TO CHECK CONTENT:\\n1. Search for exact word Anda (as complete word, not part of Belanda or other words)\\n2. Search for exact word kami (as complete word, not part of Akademik or other words)\\n3. Search for exact word kita (as complete word)\\n4. Search for colon character inside h2, h3, h4, h5 tags (between opening and closing tags)\\n5. Search for em dash character (—)\\n6. Check if content starts with opening p tag\\n7. Search for h2 tags containing Kesimpulan or Conclusion\\n\\nDO NOT CHECK:\\n- HTML tag capitalization (Li vs li is acceptable, ignore this)\\n- Typos in HTML tags (ignore tag typos, do not report them)\\n- HTML structure perfection (ignore unclosed tags, ignore this)\\n- Implied context or tone (only check actual text)\\n\\nCRITICAL RULES:\\n- Only report what you actually see\\n- Do NOT report violations based on assumptions\\n- Do NOT report HTML tag case issues\\n- Do NOT report tag typos or malformed tags\\n- Quote the EXACT text when reporting violations\\n- If you cannot find the exact violation, do NOT report it\\n\\nOUTPUT FORMAT:\\n\\nApproved:\\n{\\n  \\\"approved\\\": true,\\n  \\\"reason\\\": null\\n}\\n\\nRejected (only if you find ACTUAL violations):\\n{\\n  \\\"approved\\\": false,\\n  \\\"reason\\\": \\\"Title: 64 characters (min 65). Slug: Contains uppercase S in Skripsi. Content: Found word Anda in sentence: exact sentence here. Content: Colon in heading: exact heading text here.\\\"\\n}\\n\\nWhen reporting violations:\\n- Quote the EXACT text where violation occurs\\n- Be precise and literal\\n- Do not paraphrase or summarize\\n- Only report what actually exists in the content\\n\\nRespond ONLY with JSON. Be accurate. Do not hallucinate violations.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.choices[0].message.content) }}\n    }\n  ],\n  \"temperature\": 0.0,\n  \"max_tokens\": 500,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1072,
+          -176
+        ],
+        "id": "612931a4-c43b-49b7-97dd-86a3a18772c5",
+        "name": "Mistral - Editorial Agent"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "02a89053-79f1-491e-8494-24900d0e323e",
+                "leftValue": "={{ $json.choices[0].message.content }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1280,
+          -176
+        ],
+        "id": "f5f3aeef-9272-40d0-b738-408caa940994",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "content": "## Post to WP\n",
+          "height": 528,
+          "width": 1424
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -848,
+          448
+        ],
+        "typeVersion": 1,
+        "id": "3465c7ce-ccb8-4e1f-9773-68b67615e8ec",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -800,
+          544
+        ],
+        "id": "c80a5e3a-f530-4e51-a798-a8e34ad9fe53",
+        "name": "Schedule - Post to WP Workflow"
+      },
+      {
+        "parameters": {
+          "operation": "search",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblHzjvWyrGlQUq8V",
+            "mode": "list",
+            "cachedResultName": "Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+          },
+          "filterByFormula": "Status = \"Draft Done\"",
+          "returnAll": false,
+          "limit": 1,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          -576,
+          544
+        ],
+        "id": "3a7c7477-cc88-4356-8f1a-44dd81d058c0",
+        "name": "Airtable - Get Content from DB",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblHzjvWyrGlQUq8V",
+            "mode": "list",
+            "cachedResultName": "Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $json.id }}",
+              "Status": "Review"
+            },
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": true
+              },
+              {
+                "id": "Topic",
+                "displayName": "Topic",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Main Keyword",
+                "displayName": "Main Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Sub Keyword",
+                "displayName": "Sub Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Intent",
+                "displayName": "Intent",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Categories",
+                "displayName": "Categories",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Title",
+                "displayName": "Title",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Meta Description",
+                "displayName": "Meta Description",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Content",
+                "displayName": "Content",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Tags",
+                "displayName": "Tags",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Slug",
+                "displayName": "Slug",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "options",
+                "options": [
+                  {
+                    "name": "Draft",
+                    "value": "Draft"
+                  },
+                  {
+                    "name": "Draft Done",
+                    "value": "Draft Done"
+                  },
+                  {
+                    "name": "Review",
+                    "value": "Review"
+                  },
+                  {
+                    "name": "Published",
+                    "value": "Published"
+                  }
+                ],
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Draft Date",
+                "displayName": "Draft Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Published Date",
+                "displayName": "Published Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          -368,
+          544
+        ],
+        "id": "a5a95ed7-0607-462c-9cca-4be1ad438073",
+        "name": "Airtable - Update Status Content from DB",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://tugasin.me/wp-json/nexoflow/v1/receive/d608711f915125e8af1180356bb3f0af",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "={{ $json.id }}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $json.fields.Title }}"
+              },
+              {
+                "name": "category",
+                "value": "={{ $json.fields.Categories.replace(/\\bPendidikan\\b/g, 'Edukasi') }}"
+              },
+              {
+                "name": "main_keyword",
+                "value": "={{ $json.fields[\"Main Keyword\"] }}"
+              },
+              {
+                "name": "slug",
+                "value": "={{ $json.fields.Slug }}"
+              },
+              {
+                "name": "tags",
+                "value": "={{ $json.fields.Tags.replace(/\\bPendidikan\\b/g, 'Edukasi') }}"
+              },
+              {
+                "name": "meta_description",
+                "value": "={{ $json.fields[\"Meta Description\"] }}"
+              },
+              {
+                "name": "content",
+                "value": "={{ $json.fields.Content }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          -160,
+          544
+        ],
+        "id": "5278a9b0-63ef-4105-bc87-16eb26c66fc9",
+        "name": "HTTP Request",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "VQDRe08N5dyqNRnb",
+            "name": "WP - Tugasin"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "base": {
+            "__rl": true,
+            "value": "appgQWoHl7KdK0bBW",
+            "mode": "list",
+            "cachedResultName": "Tugasin | Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW"
+          },
+          "table": {
+            "__rl": true,
+            "value": "tblHzjvWyrGlQUq8V",
+            "mode": "list",
+            "cachedResultName": "Content Database",
+            "cachedResultUrl": "https://airtable.com/appgQWoHl7KdK0bBW/tblHzjvWyrGlQUq8V"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $('Airtable - Update Status Content from DB').item.json.id }}",
+              "Status": "={{ $('HTTP Request').item.json.success === true ? 'Published' : 'Draft' }}",
+              "Published Date": "2026-01-20T02:24:43"
+            },
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": true
+              },
+              {
+                "id": "Topic",
+                "displayName": "Topic",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Main Keyword",
+                "displayName": "Main Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Sub Keyword",
+                "displayName": "Sub Keyword",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Intent",
+                "displayName": "Intent",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Categories",
+                "displayName": "Categories",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Title",
+                "displayName": "Title",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Meta Description",
+                "displayName": "Meta Description",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Content",
+                "displayName": "Content",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Tags",
+                "displayName": "Tags",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Slug",
+                "displayName": "Slug",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "options",
+                "options": [
+                  {
+                    "name": "Draft",
+                    "value": "Draft"
+                  },
+                  {
+                    "name": "Draft Done",
+                    "value": "Draft Done"
+                  },
+                  {
+                    "name": "Review",
+                    "value": "Review"
+                  },
+                  {
+                    "name": "Published",
+                    "value": "Published"
+                  }
+                ],
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Draft Date",
+                "displayName": "Draft Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "Published Date",
+                "displayName": "Published Date",
+                "required": false,
+                "defaultMatch": false,
+                "canBeUsedToMatch": true,
+                "display": true,
+                "type": "dateTime",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {
+            "typecast": true
+          }
+        },
+        "type": "n8n-nodes-base.airtable",
+        "typeVersion": 2.1,
+        "position": [
+          80,
+          544
+        ],
+        "id": "bf67a5fa-6426-4e79-bfa7-eec7ad515ee1",
+        "name": "Airtable - Update Status Content Done",
+        "credentials": {
+          "airtableTokenApi": {
+            "id": "a3T0nTKhno0zmQj6",
+            "name": "Airtable"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "NocoDB - Get Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Filter - NocoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Update Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Code - Prompt Formatter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter - NocoDB": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Update Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code - Prompt Formatter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Get Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Get Content": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Update Status Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Update Status Content": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Get Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mistral - Rewrite Content": {
+        "main": [
+          [
+            {
+              "node": "Mistral - Editorial Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code - Prompt Formatter": {
+        "main": [
+          [
+            {
+              "node": "Mistral - Rewrite Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Create Content Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Create Content Records": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Update Status Content Final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Get Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mistral - Editorial Agent": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code - Prompt Formatter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Update Status Content Final": {
+        "main": [
+          []
+        ]
+      },
+      "Schedule - Post to WP Workflow": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Get Content from DB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Get Content from DB": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Update Status Content from DB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Airtable - Update Status Content from DB": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Airtable - Update Status Content Done",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Aldo Dwi Kristian",
+    "name": "Version 18a520ee",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
