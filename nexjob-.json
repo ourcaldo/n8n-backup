@@ -1,0 +1,894 @@
+{
+  "updatedAt": "2026-03-02T21:42:45.849Z",
+  "createdAt": "2026-03-02T20:02:39.942Z",
+  "id": "jbvGhwPcRZk91hIW",
+  "name": "Nexjob",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a95c1ae5-98c5-4290-8c71-d21a45d9185d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "job_scraper",
+        "limit": 1,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "is",
+              "keyValue": "null"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8d386d59-55e2-4582-96f9-2ba14de2b08c",
+      "name": "Get Job",
+      "credentials": {
+        "supabaseApi": {
+          "id": "igjKz98zuDgw9hbk",
+          "name": "Supabase - Tugasin - Gloriap"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "job_scraper",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "process"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "dd5d9b6a-7706-4831-9434-da4d1fb79e9d",
+      "name": "Pre-processing Job",
+      "credentials": {
+        "supabaseApi": {
+          "id": "igjKz98zuDgw9hbk",
+          "name": "Supabase - Tugasin - Gloriap"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "limit": 1,
+        "options": {
+          "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        672,
+        0
+      ],
+      "id": "4a1617c5-aeb3-4407-9265-5d7a60cb76a7",
+      "name": "NocoDB - Get Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "expired_date",
+              "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "fieldName": "id",
+              "fieldValue": "={{ $json.Id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -112
+      ],
+      "id": "b105e2c0-9b72-455b-8098-f0627ce8b010",
+      "name": "NocoDB - Update Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+              "leftValue": "={{ $json.expired_date }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        880,
+        0
+      ],
+      "id": "ac00ad9c-f12e-4bd0-b759-1995965aea1e",
+      "name": "Filter - NocoDB"
+    },
+    {
+      "parameters": {
+        "jsCode": "const jobs = $('Get Job').all();\n\nconst results = [];\n\nfor (const item of jobs) {\n  const job = { ...item.json };\n\n  if (job.content) {\n    job.content = job.content\n      .replace(/\\r?\\n/g, ' ')\n      .replace(/\\s{2,}/g, ' ')\n      .trim();\n  }\n\n  results.push({ json: { job } });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        16
+      ],
+      "id": "a83c1a60-0c5a-4d61-99c7-9118b33209f3",
+      "name": "Job Parsing"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a job listing editor for an Indonesian job portal. Your job is to CLEAN UP, RESTRUCTURE, and generate SEO metadata from the given raw job listing HTML.\\n\\nCORE PRINCIPLE:\\n- Stay faithful to the original content. DO NOT add sentences, phrases, or information that do not exist in the source.\\n- DO NOT add filler intros like \\\"Bergabunglah\\\", \\\"Apakah kamu\\\", \\\"Ini adalah kesempatan\\\", etc.\\n- DO NOT add a closing paragraph encouraging people to apply.\\n- DO NOT paraphrase excessively. Keep the original meaning and wording, just fix grammar and structure.\\n\\nWHAT YOU SHOULD DO:\\n- Fix HTML structure: use <h2> for section headings, <ul>/<li> for lists, <p> for paragraphs\\n- Fix grammar and typos if any\\n- DO NOT include any heading like \\\"Deskripsi Pekerjaan\\\", \\\"Kualifikasi\\\", \\\"Tanggung Jawab\\\", etc. in the content. The CMS adds headings automatically. Only output the body content without section headings.\\n- Remove colons (:) from any text\\n- Remove em dashes\\n- Convert <ol> to <ul> for consistency\\n- Strip all <strong> and <em> tags. No bold, no italic. Clean plain text inside structural HTML tags only.\\n- DO NOT use markdown syntax\\n\\nWHAT YOU MUST NOT DO:\\n- DO NOT add new content, sentences, or paragraphs not in the original\\n- DO NOT add opening/intro paragraphs if the original jumps straight into sections\\n- DO NOT add closing/CTA paragraphs\\n- DO NOT fabricate benefits, requirements, or company details\\n- DO NOT change the tone to be more marketing or sales-like\\n- DO NOT remove information from the original\\n- DO NOT use <strong> or <em> tags anywhere\\n- DO NOT include <h2> or <h3> headings in the content field\\n\\nOUTPUT FORMAT:\\nRespond ONLY in valid JSON with this exact structure:\\n{\\n  \\\"content\\\": \\\"HTML string without any headings, just <p> and <ul><li> content\\\",\\n  \\\"excerpt\\\": \\\"plain text, max 150 chars\\\",\\n  \\\"meta_description\\\": \\\"plain text, 140-160 chars\\\",\\n  \\\"focus_keyword\\\": \\\"lowercase, 2-4 words\\\",\\n  \\\"slug\\\": \\\"lowercase-hyphens-max-80-chars\\\",\\n  \\\"job_requirements\\\": \\\"HTML string with <ul><li> format\\\",\\n  \\\"job_responsibilities\\\": \\\"HTML string with <ul><li> format\\\",\\n  \\\"job_skills\\\": [\\\"array\\\", \\\"of\\\", \\\"skill\\\", \\\"strings\\\"],\\n  \\\"job_benefits\\\": [\\\"array\\\", \\\"of\\\", \\\"benefit\\\", \\\"strings\\\"]\\n}\\n\\nFIELD RULES:\\n- content: The cleaned-up HTML body of the job listing. NO headings (<h2>, <h3>, etc). Only <p> paragraphs and <ul><li> lists. The CMS adds section structure automatically.\\n- excerpt: 1-2 sentence plain text summary of the job in Bahasa Indonesia. Max 150 chars. No HTML.\\n- meta_description: Mention position and company context. Plain text. 140-160 chars.\\n- focus_keyword: The main search term a job seeker would use. Lowercase Bahasa Indonesia. 2-4 words.\\n- slug: Based on job position and company. Lowercase, hyphens only. Max 80 chars.\\n- job_requirements: Extract ALL qualification/requirement points and format as <ul><li>. Only from source.\\n- job_responsibilities: Extract ALL responsibility/task points and format as <ul><li>. Only from source.\\n- job_skills: Extract relevant skills mentioned or implied in the listing. Return as array of short strings in Bahasa Indonesia or English as appropriate. Examples: [\\\"Negosiasi\\\", \\\"Komunikasi\\\", \\\"Microsoft Office\\\", \\\"Presentasi\\\"]. If no skills can be extracted, return empty array [].\\n- job_benefits: Extract any benefits mentioned in the listing. Return as array of short strings. Examples: [\\\"Asuransi kesehatan\\\", \\\"Bonus tahunan\\\", \\\"Tunjangan transportasi\\\"]. If no benefits are mentioned, return empty array []. DO NOT fabricate benefits.\\n\\nCRITICAL:\\n- Return ONLY valid JSON. No markdown, no code blocks, no extra text.\\n- content, job_requirements, job_responsibilities are HTML strings.\\n- excerpt, meta_description, focus_keyword, slug are plain text strings.\\n- job_skills and job_benefits are arrays of strings.\\n- DO NOT fabricate any information.\\n- DO NOT put any headings in the content field.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.job.content) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 5000,\n  \"top_p\": 0.9,\n  \"frequency_penalty\": 0.4,\n  \"presence_penalty\": 0.5,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1648,
+        16
+      ],
+      "id": "71b97b36-1164-42e2-bed2-d60cc837e3ac",
+      "name": "Mistral - Rewrite Content"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cms.nexjob.tech/api/v1/job-posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{ $('Get Job').item.json.title }}\",\n  \"content\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).content }}\",\n  \"excerpt\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).excerpt }}\",\n  \"slug\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).slug }}\",\n  \"featured_image\": \"\",\n  \"publish_date\": \"\",\n  \"status\": \"published\",\n  \"seo_title\": \"Lowongan {{ $('Get Job').item.json.title }} - {{ $('Get Job').item.json.city }}\",\n  \"meta_description\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).meta_description }}\",\n  \"focus_keyword\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).focus_keyword }}\",\n  \"job_company_name\": \"{{ $('Get Job').item.json.company_name }}\",\n  \"job_company_logo\": \"\",\n  \"job_company_website\": \"\",\n  \"job_employment_type_id\": \"{{ $('Get Job').item.json.job_type }}\",\n  \"job_experience_level_id\": \"{{ $('Get Job').item.json.experience }}\",\n  \"job_education_level_id\": \"{{ $('Get Job').item.json.education }}\",\n  \"job_salary_min\": {{ $('Get Job').item.json.salary_min ?? 0 }},\n  \"job_salary_max\": {{ $('Get Job').item.json.salary_max ?? 0 }},\n  \"job_salary_currency\": \"IDR\",\n  \"job_salary_period\": \"bulan\",\n  \"job_is_salary_negotiable\": false,\n  \"job_province_id\": \"{{ $('Get Job').item.json.province }}\",\n  \"job_regency_id\": \"{{ $('Get Job').item.json.city }}\",\n  \"job_district_id\": \"\",\n  \"job_village_id\": \"\",\n  \"job_address_detail\": \"\",\n  \"job_is_remote\": {{ $('Get Job').item.json.work_policy === 'Remote Working' }},\n  \"job_is_hybrid\": {{ $('Get Job').item.json.work_policy === 'Hybrid Working' }},\n  \"job_application_email\": \"\",\n  \"job_application_url\": \"{{ $('Get Job').item.json.link }}\",\n  \"job_application_deadline\": \"\",\n  \"job_skills\": {{ JSON.stringify(JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_skills) }},\n  \"job_benefits\": {{ JSON.stringify(JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_benefits) }},\n  \"job_requirements\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_requirements }}\",\n  \"job_responsibilities\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_responsibilities }}\",\n  \"job_categories\": \"{{ $('Get Job').item.json.job_category }}\",\n  \"job_tags\": \"{{ $('Get Job').item.json.tags }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1888,
+        16
+      ],
+      "id": "10149d86-8b43-4d4f-a9a0-0f30e3b5f687",
+      "name": "Publish Job",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "uFOGrxbWfn6XFKFG",
+          "name": "CMS Nexjob"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "job_scraper",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Get Job').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.success === true ? 'ACTIVE' : null }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        16
+      ],
+      "id": "784dd1c9-857b-44f2-964e-e7ea9c4d2f3a",
+      "name": "Job Done",
+      "credentials": {
+        "supabaseApi": {
+          "id": "igjKz98zuDgw9hbk",
+          "name": "Supabase - Tugasin - Gloriap"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        208
+      ],
+      "id": "fd2176eb-4852-4ca4-bb33-87d6d83ae8b4",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Job": {
+      "main": [
+        [
+          {
+            "node": "Pre-processing Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Get Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Filter - NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter - NocoDB": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Update Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Job Parsing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-processing Job": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Get Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Update Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Job Parsing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Parsing": {
+      "main": [
+        [
+          {
+            "node": "Mistral - Rewrite Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral - Rewrite Content": {
+      "main": [
+        [
+          {
+            "node": "Publish Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Job": {
+      "main": [
+        [
+          {
+            "node": "Job Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ec4d73dd-c07c-4c88-bf30-17c9d93eb00c",
+  "activeVersionId": "ec4d73dd-c07c-4c88-bf30-17c9d93eb00c",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-03-02T20:02:39.942Z",
+      "createdAt": "2026-03-02T20:02:39.942Z",
+      "role": "workflow:owner",
+      "workflowId": "jbvGhwPcRZk91hIW",
+      "projectId": "3vieiS9Ecmyflq5d"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-03-02T21:42:48.684Z",
+    "createdAt": "2026-03-02T21:42:45.851Z",
+    "versionId": "ec4d73dd-c07c-4c88-bf30-17c9d93eb00c",
+    "workflowId": "jbvGhwPcRZk91hIW",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "a95c1ae5-98c5-4290-8c71-d21a45d9185d",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "job_scraper",
+          "limit": 1,
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "status",
+                "condition": "is",
+                "keyValue": "null"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          208,
+          0
+        ],
+        "id": "8d386d59-55e2-4582-96f9-2ba14de2b08c",
+        "name": "Get Job",
+        "credentials": {
+          "supabaseApi": {
+            "id": "igjKz98zuDgw9hbk",
+            "name": "Supabase - Tugasin - Gloriap"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "job_scraper",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "process"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          416,
+          0
+        ],
+        "id": "dd5d9b6a-7706-4831-9434-da4d1fb79e9d",
+        "name": "Pre-processing Job",
+        "credentials": {
+          "supabaseApi": {
+            "id": "igjKz98zuDgw9hbk",
+            "name": "Supabase - Tugasin - Gloriap"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "getAll",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "limit": 1,
+          "options": {
+            "where": "=(expired_date,is,null)~or(expired_date,gt,{{ $now.format('yyyy-MM-dd HH:mm:ss') }})"
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          672,
+          0
+        ],
+        "id": "4a1617c5-aeb3-4407-9265-5d7a60cb76a7",
+        "name": "NocoDB - Get Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "update",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldName": "expired_date",
+                "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+              },
+              {
+                "fieldName": "id",
+                "fieldValue": "={{ $json.Id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          1120,
+          -112
+        ],
+        "id": "b105e2c0-9b72-455b-8098-f0627ce8b010",
+        "name": "NocoDB - Update Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+                "leftValue": "={{ $json.expired_date }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          880,
+          0
+        ],
+        "id": "ac00ad9c-f12e-4bd0-b759-1995965aea1e",
+        "name": "Filter - NocoDB"
+      },
+      {
+        "parameters": {
+          "jsCode": "const jobs = $('Get Job').all();\n\nconst results = [];\n\nfor (const item of jobs) {\n  const job = { ...item.json };\n\n  if (job.content) {\n    job.content = job.content\n      .replace(/\\r?\\n/g, ' ')\n      .replace(/\\s{2,}/g, ' ')\n      .trim();\n  }\n\n  results.push({ json: { job } });\n}\n\nreturn results;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1392,
+          16
+        ],
+        "id": "a83c1a60-0c5a-4d61-99c7-9118b33209f3",
+        "name": "Job Parsing"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $('NocoDB - Get Mistral API').item.json.api_key }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"mistral-large-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a job listing editor for an Indonesian job portal. Your job is to CLEAN UP, RESTRUCTURE, and generate SEO metadata from the given raw job listing HTML.\\n\\nCORE PRINCIPLE:\\n- Stay faithful to the original content. DO NOT add sentences, phrases, or information that do not exist in the source.\\n- DO NOT add filler intros like \\\"Bergabunglah\\\", \\\"Apakah kamu\\\", \\\"Ini adalah kesempatan\\\", etc.\\n- DO NOT add a closing paragraph encouraging people to apply.\\n- DO NOT paraphrase excessively. Keep the original meaning and wording, just fix grammar and structure.\\n\\nWHAT YOU SHOULD DO:\\n- Fix HTML structure: use <h2> for section headings, <ul>/<li> for lists, <p> for paragraphs\\n- Fix grammar and typos if any\\n- DO NOT include any heading like \\\"Deskripsi Pekerjaan\\\", \\\"Kualifikasi\\\", \\\"Tanggung Jawab\\\", etc. in the content. The CMS adds headings automatically. Only output the body content without section headings.\\n- Remove colons (:) from any text\\n- Remove em dashes\\n- Convert <ol> to <ul> for consistency\\n- Strip all <strong> and <em> tags. No bold, no italic. Clean plain text inside structural HTML tags only.\\n- DO NOT use markdown syntax\\n\\nWHAT YOU MUST NOT DO:\\n- DO NOT add new content, sentences, or paragraphs not in the original\\n- DO NOT add opening/intro paragraphs if the original jumps straight into sections\\n- DO NOT add closing/CTA paragraphs\\n- DO NOT fabricate benefits, requirements, or company details\\n- DO NOT change the tone to be more marketing or sales-like\\n- DO NOT remove information from the original\\n- DO NOT use <strong> or <em> tags anywhere\\n- DO NOT include <h2> or <h3> headings in the content field\\n\\nOUTPUT FORMAT:\\nRespond ONLY in valid JSON with this exact structure:\\n{\\n  \\\"content\\\": \\\"HTML string without any headings, just <p> and <ul><li> content\\\",\\n  \\\"excerpt\\\": \\\"plain text, max 150 chars\\\",\\n  \\\"meta_description\\\": \\\"plain text, 140-160 chars\\\",\\n  \\\"focus_keyword\\\": \\\"lowercase, 2-4 words\\\",\\n  \\\"slug\\\": \\\"lowercase-hyphens-max-80-chars\\\",\\n  \\\"job_requirements\\\": \\\"HTML string with <ul><li> format\\\",\\n  \\\"job_responsibilities\\\": \\\"HTML string with <ul><li> format\\\",\\n  \\\"job_skills\\\": [\\\"array\\\", \\\"of\\\", \\\"skill\\\", \\\"strings\\\"],\\n  \\\"job_benefits\\\": [\\\"array\\\", \\\"of\\\", \\\"benefit\\\", \\\"strings\\\"]\\n}\\n\\nFIELD RULES:\\n- content: The cleaned-up HTML body of the job listing. NO headings (<h2>, <h3>, etc). Only <p> paragraphs and <ul><li> lists. The CMS adds section structure automatically.\\n- excerpt: 1-2 sentence plain text summary of the job in Bahasa Indonesia. Max 150 chars. No HTML.\\n- meta_description: Mention position and company context. Plain text. 140-160 chars.\\n- focus_keyword: The main search term a job seeker would use. Lowercase Bahasa Indonesia. 2-4 words.\\n- slug: Based on job position and company. Lowercase, hyphens only. Max 80 chars.\\n- job_requirements: Extract ALL qualification/requirement points and format as <ul><li>. Only from source.\\n- job_responsibilities: Extract ALL responsibility/task points and format as <ul><li>. Only from source.\\n- job_skills: Extract relevant skills mentioned or implied in the listing. Return as array of short strings in Bahasa Indonesia or English as appropriate. Examples: [\\\"Negosiasi\\\", \\\"Komunikasi\\\", \\\"Microsoft Office\\\", \\\"Presentasi\\\"]. If no skills can be extracted, return empty array [].\\n- job_benefits: Extract any benefits mentioned in the listing. Return as array of short strings. Examples: [\\\"Asuransi kesehatan\\\", \\\"Bonus tahunan\\\", \\\"Tunjangan transportasi\\\"]. If no benefits are mentioned, return empty array []. DO NOT fabricate benefits.\\n\\nCRITICAL:\\n- Return ONLY valid JSON. No markdown, no code blocks, no extra text.\\n- content, job_requirements, job_responsibilities are HTML strings.\\n- excerpt, meta_description, focus_keyword, slug are plain text strings.\\n- job_skills and job_benefits are arrays of strings.\\n- DO NOT fabricate any information.\\n- DO NOT put any headings in the content field.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.job.content) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 5000,\n  \"top_p\": 0.9,\n  \"frequency_penalty\": 0.4,\n  \"presence_penalty\": 0.5,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1648,
+          16
+        ],
+        "id": "71b97b36-1164-42e2-bed2-d60cc837e3ac",
+        "name": "Mistral - Rewrite Content"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://cms.nexjob.tech/api/v1/job-posts",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBearerAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"title\": \"{{ $('Get Job').item.json.title }}\",\n  \"content\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).content }}\",\n  \"excerpt\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).excerpt }}\",\n  \"slug\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).slug }}\",\n  \"featured_image\": \"\",\n  \"publish_date\": \"\",\n  \"status\": \"published\",\n  \"seo_title\": \"Lowongan {{ $('Get Job').item.json.title }} - {{ $('Get Job').item.json.city }}\",\n  \"meta_description\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).meta_description }}\",\n  \"focus_keyword\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).focus_keyword }}\",\n  \"job_company_name\": \"{{ $('Get Job').item.json.company_name }}\",\n  \"job_company_logo\": \"\",\n  \"job_company_website\": \"\",\n  \"job_employment_type_id\": \"{{ $('Get Job').item.json.job_type }}\",\n  \"job_experience_level_id\": \"{{ $('Get Job').item.json.experience }}\",\n  \"job_education_level_id\": \"{{ $('Get Job').item.json.education }}\",\n  \"job_salary_min\": {{ $('Get Job').item.json.salary_min ?? 0 }},\n  \"job_salary_max\": {{ $('Get Job').item.json.salary_max ?? 0 }},\n  \"job_salary_currency\": \"IDR\",\n  \"job_salary_period\": \"bulan\",\n  \"job_is_salary_negotiable\": false,\n  \"job_province_id\": \"{{ $('Get Job').item.json.province }}\",\n  \"job_regency_id\": \"{{ $('Get Job').item.json.city }}\",\n  \"job_district_id\": \"\",\n  \"job_village_id\": \"\",\n  \"job_address_detail\": \"\",\n  \"job_is_remote\": {{ $('Get Job').item.json.work_policy === 'Remote Working' }},\n  \"job_is_hybrid\": {{ $('Get Job').item.json.work_policy === 'Hybrid Working' }},\n  \"job_application_email\": \"\",\n  \"job_application_url\": \"{{ $('Get Job').item.json.link }}\",\n  \"job_application_deadline\": \"\",\n  \"job_skills\": {{ JSON.stringify(JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_skills) }},\n  \"job_benefits\": {{ JSON.stringify(JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_benefits) }},\n  \"job_requirements\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_requirements }}\",\n  \"job_responsibilities\": \"{{ JSON.parse($('Mistral - Rewrite Content').item.json.choices[0].message.content).job_responsibilities }}\",\n  \"job_categories\": \"{{ $('Get Job').item.json.job_category }}\",\n  \"job_tags\": \"{{ $('Get Job').item.json.tags }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1888,
+          16
+        ],
+        "id": "10149d86-8b43-4d4f-a9a0-0f30e3b5f687",
+        "name": "Publish Job",
+        "credentials": {
+          "httpBearerAuth": {
+            "id": "uFOGrxbWfn6XFKFG",
+            "name": "CMS Nexjob"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "job_scraper",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $('Get Job').item.json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "={{ $json.success === true ? 'ACTIVE' : null }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          2112,
+          16
+        ],
+        "id": "784dd1c9-857b-44f2-964e-e7ea9c4d2f3a",
+        "name": "Job Done",
+        "credentials": {
+          "supabaseApi": {
+            "id": "igjKz98zuDgw9hbk",
+            "name": "Supabase - Tugasin - Gloriap"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "seconds",
+                "secondsInterval": 5
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          0,
+          208
+        ],
+        "id": "fd2176eb-4852-4ca4-bb33-87d6d83ae8b4",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Get Job",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Job": {
+        "main": [
+          [
+            {
+              "node": "Pre-processing Job",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Get Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Filter - NocoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter - NocoDB": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Update Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Job Parsing",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pre-processing Job": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Get Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Update Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Job Parsing",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Job Parsing": {
+        "main": [
+          [
+            {
+              "node": "Mistral - Rewrite Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mistral - Rewrite Content": {
+        "main": [
+          [
+            {
+              "node": "Publish Job",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Publish Job": {
+        "main": [
+          [
+            {
+              "node": "Job Done",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get Job",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Aldo Dwi Kristian",
+    "name": "Version ec4d73dd",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
