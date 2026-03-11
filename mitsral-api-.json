@@ -1,0 +1,434 @@
+{
+  "updatedAt": "2026-03-11T15:03:46.656Z",
+  "createdAt": "2026-03-11T14:20:29.180Z",
+  "id": "jLF2wf1yTDQz1lLL",
+  "name": "Mitsral API",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "limit": 1,
+        "options": {
+          "where": "=(expired_date,is,null)"
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        -96
+      ],
+      "id": "08f8a420-9939-44e3-bfb9-ba67a5103585",
+      "name": "NocoDB - Get Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "update",
+        "workspaceId": "waadn311",
+        "projectId": "p68phguw93f2c54",
+        "table": "mlgtgl4ltfcf8d8",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "expired_date",
+              "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "fieldName": "id",
+              "fieldValue": "={{ $json.Id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "765895c2-5e86-4b20-a23a-e353507230fa",
+      "name": "NocoDB - Update Mistral API",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "SZI7E207k4VdK4Ju",
+          "name": "NocoDB - aldo@indexnow.studio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+              "leftValue": "={{ $json.expired_date }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        -96
+      ],
+      "id": "67e566be-d8a5-43bb-ac12-5bbb8bf80052",
+      "name": "Filter - NocoDB"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -96
+      ],
+      "id": "5d92f1c7-b20b-4f14-ab9c-654675d1f391",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"apikey\": \"{{ $('NocoDB - Get Mistral API').item.json.api_key }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        688,
+        -112
+      ],
+      "id": "44963291-74d3-4255-bf43-bb318add46b2",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "path": "68c51f35-0fef-4bc0-a909-f60484c8c532",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        128
+      ],
+      "id": "819cd2d2-02e3-4d32-a2bb-28810f7e8af5",
+      "name": "Webhook",
+      "webhookId": "68c51f35-0fef-4bc0-a909-f60484c8c532"
+    }
+  ],
+  "connections": {
+    "NocoDB - Get Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Filter - NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB - Update Mistral API": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter - NocoDB": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Update Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Get Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "NocoDB - Get Mistral API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "58a0f615-afc6-4e08-9972-20f39d7a4b25",
+  "activeVersionId": "58a0f615-afc6-4e08-9972-20f39d7a4b25",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-03-11T14:20:29.180Z",
+      "createdAt": "2026-03-11T14:20:29.180Z",
+      "role": "workflow:owner",
+      "workflowId": "jLF2wf1yTDQz1lLL",
+      "projectId": "3vieiS9Ecmyflq5d"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-03-11T15:03:50.841Z",
+    "createdAt": "2026-03-11T15:03:46.659Z",
+    "versionId": "58a0f615-afc6-4e08-9972-20f39d7a4b25",
+    "workflowId": "jLF2wf1yTDQz1lLL",
+    "nodes": [
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "getAll",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "limit": 1,
+          "options": {
+            "where": "=(expired_date,is,null)"
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          -80,
+          -96
+        ],
+        "id": "08f8a420-9939-44e3-bfb9-ba67a5103585",
+        "name": "NocoDB - Get Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "nocoDbApiToken",
+          "operation": "update",
+          "workspaceId": "waadn311",
+          "projectId": "p68phguw93f2c54",
+          "table": "mlgtgl4ltfcf8d8",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldName": "expired_date",
+                "fieldValue": "={{ $now.plus(1, 'hours').format('yyyy-MM-dd HH:mm:ss') }}"
+              },
+              {
+                "fieldName": "id",
+                "fieldValue": "={{ $json.Id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.nocoDb",
+        "typeVersion": 3,
+        "position": [
+          448,
+          -112
+        ],
+        "id": "765895c2-5e86-4b20-a23a-e353507230fa",
+        "name": "NocoDB - Update Mistral API",
+        "credentials": {
+          "nocoDbApiToken": {
+            "id": "SZI7E207k4VdK4Ju",
+            "name": "NocoDB - aldo@indexnow.studio"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "5bc9a75d-a4d4-4846-a763-472a786a5071",
+                "leftValue": "={{ $json.expired_date }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          160,
+          -96
+        ],
+        "id": "67e566be-d8a5-43bb-ac12-5bbb8bf80052",
+        "name": "Filter - NocoDB"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -416,
+          -96
+        ],
+        "id": "5d92f1c7-b20b-4f14-ab9c-654675d1f391",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"apikey\": \"{{ $('NocoDB - Get Mistral API').item.json.api_key }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          688,
+          -112
+        ],
+        "id": "44963291-74d3-4255-bf43-bb318add46b2",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "path": "68c51f35-0fef-4bc0-a909-f60484c8c532",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -416,
+          128
+        ],
+        "id": "819cd2d2-02e3-4d32-a2bb-28810f7e8af5",
+        "name": "Webhook",
+        "webhookId": "68c51f35-0fef-4bc0-a909-f60484c8c532"
+      }
+    ],
+    "connections": {
+      "NocoDB - Get Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Filter - NocoDB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NocoDB - Update Mistral API": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter - NocoDB": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Update Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Get Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "NocoDB - Get Mistral API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Aldo Dwi Kristian",
+    "name": "Version 58a0f615",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
